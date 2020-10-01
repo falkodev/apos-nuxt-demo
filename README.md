@@ -2,6 +2,8 @@
 
 This project is a demonstration of using Apostrophe in headless mode, adding Nuxt for the frontend, and Nginx as reverse-proxy.
 
+![](login.png)
+
 ## Without Docker
 
 ### Installation
@@ -42,10 +44,6 @@ Drop database:
 
 Restore in container:
 'docker run --rm --link demo-db:mongo --net apos-nuxt-demo_demo_default -v \$(pwd)/server/data/db:/backup mongo mongorestore /backup --host mongo:27018'
-
-### Log on backend
-
-`options.apos.log.info('hello world')`
 
 ### Fixtures
 
