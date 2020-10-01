@@ -1,0 +1,40 @@
+{
+  "name": "apos-nuxt-demo",
+  "version": "1.0.0",
+  "description": "Demonstration application of a platform using Apostrophe and Nuxt",
+  "scripts": {
+    "dev": "cd ./frontend && npm run dev & cd ./backend && npm run dev",
+    "lint": "npm run lint:frontend && npm run lint:backend",
+    "lint:frontend": "cd ./frontend && npm run lint",
+    "lint:backend": "cd ./backend && npm run lint",
+    "db:dump": "docker run --rm --link network-db:mongo --net network_default -v $(pwd)/backend/data/db:/backup mongo bash -c 'mongodump --out /backup --host mongo:27018 --db network'",
+    "db:restore": "docker run --rm --link network-db:mongo --net network_default -v $(pwd)/backend/data/db:/backup mongo mongorestore /backup --host mongo:27018"
+  },
+  "dependencies": {
+    "husky": "^3.0.7"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint && npm run db:dump"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "Anthony Tarlao @falkodev",
+  "license": "MIT",
+  "prettier": {
+    "printWidth": 120,
+    "semi": false,
+    "trailingComma": "all",
+    "singleQuote": true,
+    "arrowParens": "avoid"
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "sourceType": "module",
+      "ecmaVersion": 2017
+    }
+  }
+}

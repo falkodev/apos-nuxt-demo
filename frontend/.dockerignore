@@ -1,0 +1,21 @@
+## Git rules
+.git
+
+## NodeJS rules
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+node_modules
+
+.nuxt
+
+## IDE rules
+.tmp
+.idea
+.swp
+.vscode
+
+## OS metadata rules
+.DS_Store
+Thumbs.db

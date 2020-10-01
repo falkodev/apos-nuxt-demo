@@ -1,0 +1,17 @@
+{% extends data.outerLayout %}
+
+{% block title %}{{ super() }} | Home{% endblock %}
+
+{% block main %}
+  <div class="main-content">
+    <div class="flex flex-column">Home
+      {% if not data.user %}
+        <a href="{{ apos.prefix }}/login" class="login-link">Login page</a>
+      {% endif %}
+
+      {% for page in data.home._children %}
+        <div><a href="{{ apos.prefix }}{{ page._url }}">{{ page.title }}</a></div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Backend part of the platform",
+  "main": "app.js",
+  "scripts": {
+    "debug": "node --inspect-brk app.js",
+    "dev": "./serve.js",
+    "lint": "prettier --ignore-path 'lib/modules/helpers/index.js' --write '**/*.js'"
+  },
+  "author": "Anthony Tarlao @falkodev",
+  "license": "MIT",
+  "dependencies": {
+    "apostrophe": "^2.111.4",
+    "apostrophe-headless": "^2.10.2",
+    "config": "^3.3.2",
+    "cors": "^2.8.5",
+    "express-pino-logger": "^5.0.0",
+    "helmet": "^4.1.1",
+    "pino": "^6.6.1",
+    "uploadfs": "^1.16.0",
+    "validator": "^13.1.17"
+  },
+  "devDependencies": {
+    "anymatch": "^3.1.1",
+    "chokidar": "^3.4.2",
+    "clear-module": "^4.1.1",
+    "pino-pretty": "^4.2.1",
+    "prettier": "^2.1.2"
+  }
+}

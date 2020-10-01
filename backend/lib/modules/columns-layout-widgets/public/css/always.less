@@ -1,0 +1,27 @@
+.apos-column-layout {
+  display: flex;
+
+  .apos-column-layout__column {
+    padding: 10px;
+
+    &--1 {
+      width: 100%;
+    }
+    &--2 {
+      width: 50%;
+    }
+    &--3 {
+      width: calc(100% / 3);
+    }
+  }
+
+  @media (max-width: @medium) {
+    & {
+      flex-direction: column;
+    }
+
+    .apos-column-layout__column {
+      width: 100%;
+    }
+  }
+}

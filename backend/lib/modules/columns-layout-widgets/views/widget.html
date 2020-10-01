@@ -1,0 +1,18 @@
+{% set columns = data.widget.columns %}
+
+<div class="apos-column-layout">
+  {% for column in range(0, columns) %}
+    <div class="apos-column-layout__column apos-column-layout__column--{{ columns }}">
+      {{ apos.area(data.widget, 'column' + loop.index, {
+          widgets: {
+            'apostrophe-images': {
+              limit: 1
+            },
+            'text-link': {}
+          },
+          limit: 1
+        })
+      }}
+    </div>
+  {% endfor %}
+</div>

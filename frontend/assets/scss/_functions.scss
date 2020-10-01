@@ -1,0 +1,29 @@
+@import 'variables.scss';
+
+/// Depending on background color, find if light or dark text color is suitable
+/// @group functions
+/// @param {String} $background - background color
+/// @return {String} - text color
+@function find-best-text-color ($background) {
+  @if (lightness($background) < 65) {
+    @return $color-light;
+  } @else {
+    @return $color-dark;
+  }
+}
+
+/// Replace `$search` with `$replace` in `$string`
+/// @group functions
+/// @param {String} $string - initial string
+/// @param {String} $search - substring to replace
+/// @param {String} $replace ('') - new value
+/// @return {String} - updated string
+@function str-replace($string, $search, $replace: '') {
+  $index: str-index($string, $search);
+
+  @if $index {
+    @return str-slice($string, 1, $index - 1) + $replace + str-replace(str-slice($string, $index + str-length($search)), $search, $replace);
+  }
+
+  @return $string;
+}

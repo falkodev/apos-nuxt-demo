@@ -1,0 +1,64 @@
+version: '3.7'
+
+services:
+  demo-db:
+    container_name: demo-db
+    image: mongo
+    command: --port 27018
+    ports:
+      - 27018:27018
+    volumes:
+      - mongodata:/data/db
+
+  demo-backend:
+    container_name: demo-backend
+    build: backend
+    volumes:
+      - ./backend/app.js:/app/app.js
+      - ./backend/config:/app/config
+      - ./backend/lib:/app/lib
+      - ./backend/public:/app/public
+    ports:
+      - 1337:1337
+    depends_on:
+      - demo-db
+    environment:
+      MONGODB: mongodb://demo-db:27018/apos-nuxt-demo
+      NODE_ENV: ${NODE_ENV:-production}
+      NODE_APP_INSTANCE: docker
+      BASE_URL: http://localhost:1337
+
+  demo-frontend:
+    container_name: demo-frontend
+    build: frontend
+    ports:
+      - 3333:3333
+    depends_on:
+      - demo-backend
+    volumes:
+      - ./frontend/assets:/app/assets
+      - ./frontend/components:/app/components
+      - ./frontend/layouts:/app/layouts
+      - ./frontend/pages:/app/pages
+      - ./frontend/plugins:/app/plugins
+      - ./frontend/static:/app/static
+      - ./frontend/store:/app/store
+      - ./frontend/nuxt.config.js:/app/nuxt.config.js
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+
+  demo-reverse-proxy:
+    container_name: demo-reverse-proxy
+    image: nginx:alpine
+    volumes:
+      - ./backend/public:/usr/share/nginx/backend:ro
+      - ./frontend/assets:/usr/share/nginx/frontend:ro
+      - ./reverse-proxy/local.conf:/etc/nginx/nginx.conf:ro
+      - ./reverse-proxy/logs:/etc/nginx/logs:rw
+    depends_on:
+      - demo-frontend
+    ports:
+      - 80:80
+
+volumes:
+  mongodata:

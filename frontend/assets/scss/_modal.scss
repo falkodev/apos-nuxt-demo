@@ -1,0 +1,33 @@
+.v-dialog {
+  .v-card {
+    border-radius: 6px;
+    padding-bottom: 20px;
+
+    .container {
+      width: 80%;
+      min-height: 90%;
+      align-items: start;
+      .icon-align--right {
+        position: absolute;
+        top: 35px;
+        right: 35px;
+      }
+    }
+
+    &__title {
+      .headline {
+        font-size: 32px !important;
+      }
+      .v-icon.outlined {
+        border: 1px solid;
+        border-radius: 50%;
+        height: 24px;
+        width: 24px;
+      }
+    }
+
+    &__text {
+      width: 95%;
+    }
+  }
+}

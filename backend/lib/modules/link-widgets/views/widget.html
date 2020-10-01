@@ -1,0 +1,37 @@
+{% set widget = data.widget %}
+
+<div class="d-flex align-center
+{%- if widget.linkType === 'button' %}
+  {%- if widget.buttonPosition === 'left' %} justify-start
+  {% elseif widget.buttonPosition === 'center' %} justify-center
+  {% else %} justify-end
+  {%- endif %}
+{%- endif -%}" style="background: {{ widget.lineColor }};margin: 0 -50px;">
+  <a
+    style="color: {{ widget.textColor }};
+    {%- if widget.linkType === 'button' %} text-decoration: none; {%- endif %}
+    {%- if widget.linkType === 'button' and widget.buttonLarge %} width: 100%; {%- endif %}
+    {%- if widget.boldFont %} font-weight: bold; {%- endif %}"
+    href="{{ widget.url }}"
+    {% if widget.newWindow -%} target="_blank" {%- endif %}
+    {% if widget.noFollow -%} rel="nofollow" {%- endif %}
+  >
+    {% if widget.linkType === 'button' %}
+      <button
+        type="submit"
+        class="v-btn v-btn--contained theme--dark v-size--large
+          {%- if widget.buttonLarge %} v-btn--block {%- endif %}
+          {%- if widget.buttonStyle === 'outlined' %} v-btn--depressed v-btn--outlined {%- endif %}"
+        style="
+          {%- if widget.buttonStyle === 'outlined' -%} background: white; border: thin solid {{ widget.textColor }}
+          {%- else -%} background: {{ widget.bgColor }} {%- endif -%};
+          color: {{ widget.textColor }}">
+        <span class="v-btn__content" {%- if widget.boldFont %} style="font-weight: bold;"{%- endif %}>
+          {{ widget.text }}
+        </span>
+      </button>
+    {% else %}
+      {{ widget.text }}
+    {% endif %}
+  </a>
+</div>

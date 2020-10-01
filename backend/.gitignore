@@ -1,0 +1,10 @@
+npm-debug.log
+server/public
+server/data/missions
+temp/uploadfs
+node_modules
+dist
+.jshintrc
+.DS_Store
+nginx/logs
+.vscode

@@ -1,0 +1,24 @@
+@import '~vuetify/src/styles/styles.sass';
+
+@import '~assets/scss/_modal.scss';
+
+$primary: map-get($deep-purple, 'accent-4') !important;
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+.v-application {
+  font-family: 'Roboto', sans-serif;
+
+  .primary {
+    background-color: $primary;
+    border-color: $primary;
+
+    &--text {
+      color: $primary;
+      caret-color: $primary;
+    }
+  }
+}
+

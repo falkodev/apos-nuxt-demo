@@ -1,0 +1,9 @@
+npm-debug.log
+backend/public
+temp/uploadfs
+node_modules
+dist
+.jshintrc
+.DS_Store
+reverse-proxy/logs
+.vscode
