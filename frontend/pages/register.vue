@@ -8,12 +8,11 @@
 import Register from '~/components/Register'
 
 export default {
-  head: {
-    titleTemplate: '%s - Login',
-  },
-
   components: {
     Register,
+  },
+  head: {
+    titleTemplate: '%s - Login',
   },
 }
 </script>

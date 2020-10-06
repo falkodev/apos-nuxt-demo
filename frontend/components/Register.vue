@@ -4,16 +4,10 @@
       <v-container fluid grid-list-lg>
         <v-flex xs12>
           <v-card-title class="flex-column align-start">
-            <span class="headline font-weight-bold grey--text text--darken-1">
-              Register
-            </span>
-            <v-icon v-show="modal" class="icon-align--right outlined" small @click="reset">
-              close
-            </v-icon>
+            <span class="headline font-weight-bold grey--text text--darken-1"> Register </span>
+            <v-icon v-show="modal" class="icon-align--right outlined" small @click="reset"> close </v-icon>
             <div class="subheadline font-weight-thin pt-3">
-              <nuxt-link :to="{ name: 'login' }" @click.native="close">
-                Already have an account?
-              </nuxt-link>
+              <nuxt-link :to="{ name: 'login' }" @click.native="close"> Already have an account? </nuxt-link>
             </div>
           </v-card-title>
           <v-card-text>
@@ -29,13 +23,7 @@
               />
             </v-flex>
             <v-flex xs12>
-              <v-text-field
-                v-model="lastName"
-                label="Last Name"
-                :rules="[rules.required]"
-                color="primary"
-                required
-              />
+              <v-text-field v-model="lastName" label="Last Name" :rules="[rules.required]" color="primary" required />
             </v-flex>
             <v-flex xs12>
               <v-text-field

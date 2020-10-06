@@ -1,23 +1,20 @@
 <template>
   <section class="homepage">
     <div>
+      <!-- eslint-disable-next-line vue/no-v-html -->
       <span v-html="content"></span>
     </div>
   </section>
 </template>
 
 <script>
-
 export default {
-  components: {
-  },
+  components: {},
 
-  async asyncData({ $axios, store }) {
+  async asyncData({ $axios }) {
     try {
       const pages = await $axios.$get('/api/v1/apostrophe-pages')
-      const homepage = pages._children.find(
-        child => child.type === 'front-homepage',
-      )
+      const homepage = pages._children.find(child => child.type === 'front-homepage')
 
       if (homepage) {
         const content = await $axios.$get(`/api/v1/apostrophe-pages/${homepage._id}?render=front-homepage`)

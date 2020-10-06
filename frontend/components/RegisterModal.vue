@@ -1,8 +1,6 @@
 <template>
   <v-layout row justify-center>
-    <v-btn class="activator" text @click="dialog = true">
-      Register
-    </v-btn>
+    <v-btn class="activator" text @click="dialog = true"> Register </v-btn>
     <v-dialog v-model="dialog" max-width="600px" :fullscreen="$vuetify.breakpoint.mdAndDown">
       <client-only>
         <Register :modal="true" :close="close" />

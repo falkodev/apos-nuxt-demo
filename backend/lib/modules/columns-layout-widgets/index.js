@@ -2,7 +2,7 @@ module.exports = {
   extend: 'apostrophe-widgets',
   label: 'Columns Layout',
   contextualOnly: false,
-  beforeConstruct: function(self, options) {
+  beforeConstruct: function (self, options) {
     options.addFields = [
       {
         name: 'columns',
@@ -44,9 +44,9 @@ module.exports = {
       },
     ].concat(options.addFields || [])
   },
-  construct: function(self, options) {
+  construct: function (self, options) {
     const superPushAssets = self.pushAssets
-    self.pushAssets = function() {
+    self.pushAssets = function () {
       superPushAssets()
       self.pushAsset('stylesheet', 'always', { when: 'always' })
     }

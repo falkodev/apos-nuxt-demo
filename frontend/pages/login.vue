@@ -8,12 +8,11 @@
 import Login from '~/components/Login'
 
 export default {
-  head: {
-    titleTemplate: '%s - Login',
-  },
-
   components: {
     Login,
+  },
+  head: {
+    titleTemplate: '%s - Login',
   },
 }
 </script>

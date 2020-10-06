@@ -2,9 +2,7 @@
   <div class="container">
     <h1>An error occurred</h1>
     <p>{{ error.message }}</p>
-    <nuxt-link to="/">
-      Home page
-    </nuxt-link>
+    <nuxt-link to="/"> Home page </nuxt-link>
   </div>
 </template>
 

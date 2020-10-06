@@ -3,9 +3,7 @@
     <v-snackbar :value="show" :color="color" :timeout="timeout" :top="top" :bottom="bottom">
       <label>{{ message }}</label>
       <v-btn color="white" text @click.native="resetSnack">
-        <v-icon class="outlined" small @click.native="resetSnack">
-          close
-        </v-icon>
+        <v-icon class="outlined" small @click.native="resetSnack"> close </v-icon>
       </v-btn>
     </v-snackbar>
   </transition>

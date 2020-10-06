@@ -1,5 +1,5 @@
 apos.define('apostrophe-rich-text-widgets-editor', {
-  construct: function(self, options) {
+  construct: function (self, options) {
     self.options = {
       toolbar: ['Scayt', 'Styles', 'Bold', 'Italic', 'Link', 'Unlink', 'Undo', 'Redo', ...(options.toolbar || [])],
       styles: [
@@ -107,7 +107,7 @@ apos.define('apostrophe-rich-text-widgets-editor', {
       ],
     }
 
-    self.beforeCkeditorInline = function() {
+    self.beforeCkeditorInline = function () {
       // self.config.disableNativeSpellChecker = false; // => if browser spell checker is needed instead of Scayt
       const country = window.document.location.hostname.split('.')[1]
       self.config.scayt_autoStartup = true

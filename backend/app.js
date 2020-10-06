@@ -1,6 +1,6 @@
 const config = require('config')
 
-const apos = require('apostrophe')({
+module.exports = require('apostrophe')({
   shortName: config.get('shortName'),
   title: config.get('title'),
   baseUrl: config.get('baseUrl'),
@@ -8,11 +8,15 @@ const apos = require('apostrophe')({
   modules: {
     'apostrophe-admin-bar': {},
     'apostrophe-areas': {},
-    // 'apostrophe-assets': {
-    //   stylesheets: [{ name: 'site' }],
-    // },
+    'apostrophe-assets': {
+      jQuery: 3,
+      stylesheets: [{ name: 'site' }],
+    },
     'apostrophe-db': {
       uri: config.get('mongo.uri'),
+      connect: {
+        useUnifiedTopology: true
+      }
     },
     'apostrophe-express': {},
     'apostrophe-headless': {
@@ -24,7 +28,6 @@ const apos = require('apostrophe')({
     fixtures: {},
     'link-widgets': {},
     'text-link-widgets': {},
+    products: {},
   },
 })
-
-module.exports = apos

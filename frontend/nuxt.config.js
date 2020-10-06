@@ -46,10 +46,7 @@ module.exports = {
   /*
    ** Nuxt.js modules
    */
-  modules: [
-    '@nuxtjs/axios',
-    '@nuxtjs/auth',
-  ],
+  modules: ['@nuxtjs/axios', '@nuxtjs/auth'],
 
   /*
    ** Axios module configuration

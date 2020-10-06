@@ -106,9 +106,9 @@ module.exports = {
       type: 'boolean',
     },
   ],
-  construct: function(self, options) {
+  construct: function (self, options) {
     const superPushAssets = self.pushAssets
-    self.pushAssets = function() {
+    self.pushAssets = function () {
       superPushAssets()
       self.pushAsset('stylesheet', 'always', { when: 'always' })
     }

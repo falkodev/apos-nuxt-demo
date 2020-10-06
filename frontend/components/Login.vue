@@ -4,12 +4,8 @@
       <v-container :class="{ 'container--small': !modal }">
         <v-flex class="flex--centered">
           <v-card-title class="justify-center">
-            <span class="headline font-weight-bold grey--text text--darken-1">
-              Login
-            </span>
-            <v-icon v-show="modal" class="icon-align--right outlined" small @click="close">
-              close
-            </v-icon>
+            <span class="headline font-weight-bold grey--text text--darken-1"> Login </span>
+            <v-icon v-show="modal" class="icon-align--right outlined" small @click="close"> close </v-icon>
           </v-card-title>
 
           <v-card-text>
@@ -37,9 +33,7 @@
 
           <v-card-actions class="justify-center">
             <v-layout column>
-              <v-btn type="submit" class="login" color="primary" dark large :loading="loading">
-                Login
-              </v-btn>
+              <v-btn type="submit" class="login" color="primary" dark large :loading="loading"> Login </v-btn>
               <div class="separator" />
               <RegisterModal />
             </v-layout>
