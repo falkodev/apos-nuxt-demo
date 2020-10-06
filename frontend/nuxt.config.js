@@ -53,7 +53,8 @@ module.exports = {
    */
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
-    baseURL: 'http://localhost:1337',
+    baseURL: process.env.BASE_URL || 'http://localhost:1337/api',
+    browserBaseURL: 'http://localhost:1337/api',
   },
 
   auth: {
