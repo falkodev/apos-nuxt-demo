@@ -62,6 +62,8 @@ export default {
   display: flex;
   flex-direction: row;
   flex-flow: row wrap;
+  justify-content: center;
+  align-items: start;
 
   &__item {
     display: flex;
