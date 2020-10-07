@@ -15,8 +15,8 @@ module.exports = require('apostrophe')({
     'apostrophe-db': {
       uri: config.get('mongo.uri'),
       connect: {
-        useUnifiedTopology: true
-      }
+        useUnifiedTopology: true,
+      },
     },
     'apostrophe-express': {},
     'apostrophe-headless': {

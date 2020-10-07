@@ -38,14 +38,14 @@ export default {
 
         return {
           content: newHtmlString,
-          products
+          products,
         }
       }
       throw new Error('no defined homepage')
     } catch (error) {
       return {
         content: '',
-        products: []
+        products: [],
       }
     }
   },

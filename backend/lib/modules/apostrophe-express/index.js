@@ -28,7 +28,7 @@ module.exports = {
       frameguard: {
         action: 'sameorigin',
       },
-      contentSecurityPolicy: false
+      contentSecurityPolicy: false,
     }),
   ],
 }

@@ -26,10 +26,7 @@ module.exports = {
           self.apos.log.info(`Users "admin" and "front-app" removed: ${removedUsers.result}`)
         }
 
-        let adminGroup = await self.apos.groups
-          .find(req, { title: 'admin' })
-          .permission(false)
-          .toObject()
+        let adminGroup = await self.apos.groups.find(req, { title: 'admin' }).permission(false).toObject()
         if (!adminGroup) {
           adminGroup = await self.apos.groups.insert(
             req,
@@ -81,7 +78,7 @@ module.exports = {
         self.apos.log.info(`Products removed: ${removedPieces}`)
 
         // Add products
-        for (let i=1; i <= 10; i++) {
+        for (let i = 1; i <= 10; i++) {
           const pictureName = `dish-${i}.jpg`
           const picturePath = path.resolve(__dirname, `./attachments/${pictureName}`)
           const picture = await self.apos.attachments.insert(req, { name: pictureName, path: picturePath })
@@ -100,5 +97,5 @@ module.exports = {
         self.apos.log.error(`Error in runProducts: ${error.message}`)
       }
     }
-  }
+  },
 }
