@@ -2,6 +2,7 @@ module.exports = {
   extend: 'apostrophe-pieces',
   name: 'product',
   alias: 'product',
+  restApi: true,
   addFields: [
     {
       name: 'description',

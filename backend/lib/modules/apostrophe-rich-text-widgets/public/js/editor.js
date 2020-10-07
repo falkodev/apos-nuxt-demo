@@ -26,17 +26,17 @@ apos.define('apostrophe-rich-text-widgets-editor', {
         {
           name: 'Background Color',
           element: 'p',
-          styles: { margin: '0 -100%', background: '#6B5DFF', color: 'white' },
+          styles: { margin: '0 -25%', background: '#6B5DFF', color: 'white' },
         },
         {
           name: 'Background Color Centered',
           element: 'p',
-          styles: { margin: '0 -100%', 'text-align': 'center', background: '#6B5DFF', color: 'white' },
+          styles: { margin: '0 -25%', 'text-align': 'center', background: '#6B5DFF', color: 'white' },
         },
         {
           name: 'Background Color Big Size',
           element: 'p',
-          styles: { margin: '0 -100%', 'font-size': '32px', background: '#6B5DFF', color: 'white' },
+          styles: { margin: '0 -25%', 'font-size': '32px', background: '#6B5DFF', color: 'white' },
         },
         {
           name: 'Right Background Color Big Size',
@@ -96,7 +96,7 @@ apos.define('apostrophe-rich-text-widgets-editor', {
           name: 'Background Color Big Size Centered',
           element: 'p',
           styles: {
-            margin: '0 -100%',
+            margin: '0 -25%',
             'text-align': 'center',
             'font-size': '32px',
             background: '#6B5DFF',
