@@ -4,6 +4,7 @@
   "description": "Demonstration application of a platform using Apostrophe and Nuxt",
   "scripts": {
     "dev": "cd ./frontend && npm run dev & cd ./backend && npm run dev",
+    "install-app": "cd ./frontend && npm i & cd ./backend && npm i",
     "lint": "npm run lint:frontend && npm run lint:backend",
     "lint:frontend": "cd ./frontend && npm run lint",
     "lint:backend": "cd ./backend && npm run lint",
