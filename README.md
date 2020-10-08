@@ -25,7 +25,7 @@ Having `docker` installed, run `make`.
 ### Usage
 
 Run `make` for the `development` environment, `make prod` for the `production` environment.
-Go to `http://localhost/api` to access the backend and `http://localhost` for the frontend.
+Go to `http://localhost/apos` to access the backend and `http://localhost` for the frontend.
 
 ### Other Docker commands
 

@@ -4,9 +4,8 @@ services:
   demo-db:
     container_name: demo-db
     image: mongo
-    command: --port 27018
     ports:
-      - 27018:27018
+      - 27018:27017
     volumes:
       - mongodata:/data/db
 
@@ -23,10 +22,10 @@ services:
     depends_on:
       - demo-db
     environment:
-      MONGODB: mongodb://demo-db:27018/apos-nuxt-demo
+      MONGODB: mongodb://demo-db:27017/apos-nuxt-demo
       NODE_ENV: ${NODE_ENV:-production}
       NODE_APP_INSTANCE: docker
-      BASE_URL: http://localhost/api
+      BASE_URL: http://localhost/apos
 
   demo-frontend:
     container_name: demo-frontend
@@ -46,7 +45,7 @@ services:
       - ./frontend/nuxt.config.js:/app/nuxt.config.js
     environment:
       NODE_ENV: ${NODE_ENV:-production}
-      BASE_URL: http://demo-backend:1337/api
+      BASE_URL: http://demo-backend:1337/apos
 
   demo-reverse-proxy:
     container_name: demo-reverse-proxy

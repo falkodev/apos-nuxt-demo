@@ -7,8 +7,8 @@
     "lint": "npm run lint:frontend && npm run lint:backend",
     "lint:frontend": "cd ./frontend && npm run lint",
     "lint:backend": "cd ./backend && npm run lint",
-    "db:dump": "docker run --rm --link demo-db:mongo --net apos-nuxt-demo_default -v $(pwd)/backend/data/db:/backup mongo bash -c 'mongodump --out /backup --host mongo:27018 --db apos-nuxt-demo'",
-    "db:restore": "docker run --rm --link demo-db:mongo --net apos-nuxt-demo_default -v $(pwd)/backend/data/db:/backup mongo mongorestore /backup --host mongo:27018"
+    "db:dump": "docker run --rm --link demo-db:mongo --net apos-nuxt-demo_default -v $(pwd)/backend/data/db:/backup mongo bash -c 'mongodump --out /backup --host mongo --db apos-nuxt-demo'",
+    "db:restore": "docker run --rm --link demo-db:mongo --net apos-nuxt-demo_default -v $(pwd)/backend/data/db:/backup mongo mongorestore /backup --host mongo"
   },
   "dependencies": {
     "husky": "^3.0.7"

@@ -4,7 +4,7 @@ module.exports = require('apostrophe')({
   shortName: config.get('shortName'),
   title: config.get('title'),
   baseUrl: config.get('baseUrl'),
-  prefix: '/api',
+  prefix: '/apos',
   modules: {
     'apostrophe-admin-bar': {},
     'apostrophe-areas': {},
