@@ -10,7 +10,7 @@
       {% endif %}
 
       {% for page in data.home._children %}
-        <div><a href="{{ apos.prefix }}{{ page._url }}">{{ page.title }}</a></div>
+        <div><a href="{{ page._url }}">{{ page.title }}</a></div>
       {% endfor %}
     </div>
   </div>

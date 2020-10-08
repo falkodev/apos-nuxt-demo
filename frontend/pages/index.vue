@@ -1,13 +1,13 @@
 <template>
   <section class="homepage">
+    <!-- eslint-disable-next-line vue/no-v-html -->
+    <div v-html="content"></div>
     <div class="homepage-products">
       <div v-for="product in products" :key="product._id" class="homepage-products__item">
         <img :src="product.picture._urls['one-third']" />
         <span>{{ product.description }}</span>
       </div>
     </div>
-    <!-- eslint-disable-next-line vue/no-v-html -->
-    <div v-html="content"></div>
   </section>
 </template>
 
@@ -16,8 +16,13 @@ export default {
   components: {},
 
   async asyncData({ $axios }) {
+    let products = []
     try {
-      const { results: products } = await $axios.$get('/api/v1/products')
+      const { results } = await $axios.$get('/api/v1/products')
+      if (results.length) {
+        products = results
+      }
+
       const pages = await $axios.$get('/api/v1/apostrophe-pages')
       const homepage = pages._children.find(child => child.type === 'front-homepage')
 
@@ -43,6 +48,12 @@ export default {
       }
       throw new Error('no defined homepage')
     } catch (error) {
+      if (products) {
+        return {
+          content: '',
+          products,
+        }
+      }
       return {
         content: '',
         products: [],

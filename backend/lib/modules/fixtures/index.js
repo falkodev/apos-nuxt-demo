@@ -73,12 +73,12 @@ module.exports = {
         self.apos.log.info(`Images removed: ${removedAttachments}`)
         const removedPieces = await self.apos.docs.db.remove({
           type: 'product',
-          id: { $gte: 0, $lte: 10 },
+          title: /dish/i,
         })
         self.apos.log.info(`Products removed: ${removedPieces}`)
 
         // Add products
-        for (let i = 1; i <= 10; i++) {
+        for (let i = 1; i <= 8; i++) {
           const pictureName = `dish-${i}.jpg`
           const picturePath = path.resolve(__dirname, `./attachments/${pictureName}`)
           const picture = await self.apos.attachments.insert(req, { name: pictureName, path: picturePath })
