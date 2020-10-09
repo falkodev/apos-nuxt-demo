@@ -143,4 +143,66 @@ The products are displayed in the component's template part, with a classical `v
 
 You can notice Apostrophe has automatically resized the pictures. We chose to display the "one-third" format here.
 
-//TODO: editable homepage on Apos
+Now, if you want to add text on this homepage, you could edit the Vue component, but it is not convenient. A better way is to edit the content in Apostrophe, and let it be displayed on the frontend.
+
+For that, a page type "homepage" has been configured on the backend:
+
+```js
+// in backend/lib/modules/apostrophe-pages/index.js
+module.exports = {
+  restApi: true,
+  apiTemplates: ['front-homepage'],
+  types: [
+    {
+      name: 'front-homepage',
+      label: 'Front Homepage',
+    },
+  ],
+  ...
+}
+````
+
+The `apostrophe-pages` modules has also the `restApi` option and defines one page type an Apostrophe editor can create: `front-homepage`. Also, with `apiTemplates: ['front-homepage']` we indicate to expose the rendered template.
+
+Let's create a "front-homepage" page by clicking on "Pages" in the Apostrophe admin bar and "New Page", and then filling the "New Page" form:
+
+<br><img src=".readme-assets/homepage-settings.png" width="800"><br>
+
+The `title` and `slug` fields do not really matter. What it is important is the `type` field: "Front Homepage".
+
+Then, on this new page, click on the "+" icon and add a "Columns Layout" widget.
+
+<br><img src=".readme-assets/columns-layout-widget.png" width="800"><br>
+
+This type of widget is useful when you need to divide the screen. For example, here is what you could do with a 2-column layout:
+
+<br><img src=".readme-assets/2-columns-layout.png" width="800"><br>
+
+But that is not what we are doing. For the moment, choose "1 column". Now you have access to other widgets. Choose "Text Link".
+
+<br><img src=".readme-assets/1-column-layout-widgets.png"><br>
+
+Last step for this widget: you have access to "Rich Text" and "Link". Choose "Rich Text" and start to type text. For example:
+
+<br><img src=".readme-assets/rich-text.png" width="800"><br>
+
+To get the same color and background color, play the style selector in the rich-text toolbar:
+
+<br><img src=".readme-assets/style-selector.png"><br>
+
+Hovering just below the rich text zone, a green bar will appear and you can add another widget. Choose "Link" this time. Here are suggested settings (if you do not use Docker, be sure to type `http://localhost:3333/login` in the URL field):
+
+<br><img src=".readme-assets/link-settings.png"><br>
+
+And the result, still in Apostrophe:
+
+<br><img src=".readme-assets/backend-homepage.png" width="800"><br>
+
+Now you can go to the frontend and reload the page (`http://localhost` on Docker, `http://localhost:3333` otherwise).
+
+<br><img src=".readme-assets/frontend-homepage-new.png" width="800"><br>
+
+How does this work? Again, in the `index.vue` component (in `frontend/pages/`), the `asyncData` method fetches the pages exposed by Apostrophe, and finds the homepage we created. You can click the "Order" button, it should lead you to the login page.
+
+Now, let's create a user and order food!
+
