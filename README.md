@@ -206,3 +206,52 @@ How does this work? Again, in the `index.vue` component (in `frontend/pages/`), 
 
 Now, let's create a user and order food!
 
+Add a "customer" module: create a folder "customers" under `backend/lib/modules` with a `index.js` file in it with this content:
+
+```js
+module.exports = {
+  extend: 'apostrophe-pieces',
+  name: 'customer',
+  alias: 'customer',
+  restApi: true,
+  addFields: [
+    {
+      name: 'username',
+      type: 'string',
+      required: true,
+    },
+    {
+      name: 'password',
+      type: 'password',
+      min: 4,
+      max: 20,
+      required: true,
+    },
+  ],
+  arrangeFields: [
+    {
+      name: 'basics',
+      label: 'Basics',
+      fields: ['title', 'slug', 'username', 'password', 'published', 'tags'],
+    },
+  ],
+  removeFields: ['tags'],
+}
+```
+
+Then add this line to `backend/app.js`, under `products: {}`:
+
+```js
+module.exports = require('apostrophe')({
+  ...
+  modules: {
+    ...,
+    customers: {},
+  }
+})
+```
+
+Now, a new category "Customers" has appeared in the Apostrophe admin bar:
+
+<br><img src=".readme-assets/admin-bar-customers.png" width="800"><br>
+

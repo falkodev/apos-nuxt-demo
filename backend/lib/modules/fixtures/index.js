@@ -36,6 +36,16 @@ module.exports = {
           self.apos.log.info('Admin group created')
         }
 
+        let guestGroup = await self.apos.groups.find(req, { title: 'guest' }).permission(false).toObject()
+        if (!guestGroup) {
+          guestGroup = await self.apos.groups.insert(
+            req,
+            { title: 'guest', permissions: ['edit-customer'] },
+            { permissions: false },
+          )
+          self.apos.log.info('Guest group created')
+        }
+
         await self.apos.users.insert(
           req,
           {
@@ -55,6 +65,7 @@ module.exports = {
             password: 'pass01',
             title: 'front-app',
             firstName: 'front-app',
+            groupIds: [guestGroup._id],
           },
           { permissions: false },
         )
