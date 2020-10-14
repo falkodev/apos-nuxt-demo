@@ -12,7 +12,7 @@ Having `npm` and `node` installed on the machine, run `npm run install-app`.
 
 ### Usage
 
-Go to `http://localhost:1337/apos` to access the backend and `http://localhost:3333` for the frontend.
+Go to `http://localhost:1337/cms` to access the backend and `http://localhost:3333` for the frontend.
 
 ## With Docker
 
@@ -23,7 +23,7 @@ Having `docker` installed, run `make`.
 ### Usage
 
 Run `make` for the `development` environment, `make prod` for the `production` environment.
-Go to `http://localhost/apos` to access the backend and `http://localhost` for the frontend.
+Go to `http://localhost/cms` to access the backend and `http://localhost` for the frontend.
 
 ### Other Docker commands
 
@@ -63,7 +63,7 @@ Start by cloning this project.
 
 `git clone git@github.com:falkodev/apos-nuxt-demo.git` //TODO: change url to an apostrophe one when ready
 
-If you have Docker installed, run `make` otherwise `npm run install-app`. `http://localhost:1337/apos` for the backend and `http://localhost:3333` for the frontend should be accessible (ports are not mandatory if you use Docker).
+If you have Docker installed, run `make` otherwise `npm run install-app`. `http://localhost:1337/cms` for the backend and `http://localhost:3333` for the frontend should be accessible (ports are not mandatory if you use Docker).
 
 We are going to create dishes for our customers. To facilitate this step, fixtures have been created. They will create an admin user on Apostrophe, and documents in the "Products" module.
 
@@ -86,7 +86,7 @@ By default, Apostrophe adds a title, a slug, a "published" status, and a "trash"
 
 On another teminal, run `docker-compose exec demo-backend node app fixtures:all` if you use Docker, `cd backend && node app fixtures:all` otherwise.
 
-Now, go to `http://localhost:1337/apos/login` and enter the following credentials: "admin" as username, "admin" as password.
+Now, go to `http://localhost:1337/cms/login` and enter the following credentials: "admin" as username, "admin" as password.
 
 <br><img src=".readme-assets/backend-login.png" width="400"><br>
 
@@ -192,7 +192,7 @@ To get the same color and background color, play the style selector in the rich-
 
 Hovering just below the rich text zone, a green bar will appear and you can add another widget. Choose "Link" this time. Here are suggested settings (if you do not use Docker, be sure to type `http://localhost:3333/login` in the URL field):
 
-<br><img src=".readme-assets/link-settings.png"><br>
+<br><img src=".readme-assets/link-settings.png" width="800"><br>
 
 And the result, still in Apostrophe:
 
@@ -206,52 +206,51 @@ How does this work? Again, in the `index.vue` component (in `frontend/pages/`), 
 
 Now, let's create a user and order food!
 
-Add a "customer" module: create a folder "customers" under `backend/lib/modules` with a `index.js` file in it with this content:
+Click on "Register" in the frontend bar. Add an email and a password. The registration should be successful. To check, now click on the "Login" button and enter the credentials you used in the previous step. A welcome message is display on success.
+
+How does this work?
+
+Edit `frontend/components/Register.vue`. You can observe the component calls `/modules/apostrophe-users/register` when submitting the form.
+On the backend, the `apostrophe-users` module has a custom route
 
 ```js
-module.exports = {
-  extend: 'apostrophe-pieces',
-  name: 'customer',
-  alias: 'customer',
-  restApi: true,
-  addFields: [
-    {
-      name: 'username',
-      type: 'string',
-      required: true,
-    },
-    {
-      name: 'password',
-      type: 'password',
-      min: 4,
-      max: 20,
-      required: true,
-    },
-  ],
-  arrangeFields: [
-    {
-      name: 'basics',
-      label: 'Basics',
-      fields: ['title', 'slug', 'username', 'password', 'published', 'tags'],
-    },
-  ],
-  removeFields: ['tags'],
-}
+self.route('post', 'register', async (req, res) => { ... }
 ```
 
-Then add this line to `backend/app.js`, under `products: {}`:
+where it creates a new user. This user can log in because:
+
+- in `frontend/nuxt.config.js`, there is a Nuxt plugin for authentication, indicating which route to use for the login
 
 ```js
-module.exports = require('apostrophe')({
-  ...
-  modules: {
-    ...,
-    customers: {},
-  }
+auth: {
+  plugins: ['~/plugins/auth.js'],
+  rewriteRedirects: true,
+  fullPathRedirect: true,
+  watchLoggedIn: false,
+  strategies: {
+    local: {
+      endpoints: {
+        login: { url: '/api/v1/login', method: 'post', propertyName: 'bearer' },
+        logout: { url: '/api/v1/logout', method: 'post' },
+        user: false,
+      },
+    },
+  },
+},
+```
+
+- and in `frontend/components/Login.vue`, the component uses this plugin to trigger the login action
+
+```js
+const response = await this.$auth.loginWith('local', {
+  data: {
+    username: this.email,
+    password: this.password,
+  },
 })
 ```
 
-Now, a new category "Customers" has appeared in the Apostrophe admin bar:
+Apostrophe replies to this action by checking the password with its saved hash and sends back a bearer token.
 
-<br><img src=".readme-assets/admin-bar-customers.png" width="800"><br>
-
+// TODO: create an "order" module in apostrophe and join orders to users
+// TODO: add a "Order" button to every dish (and change "Order" to "Login" in the homepage coming from Apos)

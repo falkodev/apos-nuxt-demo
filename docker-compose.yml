@@ -25,7 +25,7 @@ services:
       MONGODB: mongodb://demo-db:27017/apos-nuxt-demo
       NODE_ENV: ${NODE_ENV:-production}
       NODE_APP_INSTANCE: docker
-      BASE_URL: http://localhost/apos
+      BASE_URL: http://localhost/cms
 
   demo-frontend:
     container_name: demo-frontend
@@ -45,7 +45,7 @@ services:
       - ./frontend/nuxt.config.js:/app/nuxt.config.js
     environment:
       NODE_ENV: ${NODE_ENV:-production}
-      BASE_URL: http://demo-backend:1337/apos
+      BASE_URL: http://demo-backend:1337/cms
 
   demo-reverse-proxy:
     container_name: demo-reverse-proxy

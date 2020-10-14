@@ -13,17 +13,6 @@
           <v-card-text>
             <v-flex xs12>
               <v-text-field
-                v-model="name"
-                label="Name"
-                :rules="[rules.required]"
-                :append-icon="'error-messages'.length ? undefined : 'check'"
-                autofocus
-                color="primary"
-                required
-              />
-            </v-flex>
-            <v-flex xs12>
-              <v-text-field
                 ref="email"
                 v-model="email"
                 type="email"
@@ -32,6 +21,7 @@
                 :error-messages="emailErrors"
                 color="primary"
                 required
+                @keyup.enter="register"
               />
             </v-flex>
             <v-flex xs12>
@@ -42,6 +32,7 @@
                 :rules="[rules.required, rules.min]"
                 color="primary"
                 required
+                @keyup.enter="register"
               />
             </v-flex>
           </v-card-text>
@@ -71,7 +62,6 @@ export default {
   data: function () {
     return {
       valid: false,
-      name: '',
       email: '',
       password: '',
       rules: {
@@ -93,37 +83,28 @@ export default {
       if (!v) {
         return
       }
-      // await this.$axios
-      //   .get(`/modules/apostrophe-users/check-email/${v}`)
-      //   .then(res => (this.emailErrors = res.data.exists ? ['Email already exists'] : []))
-      //   .catch(err => (this.emailErrors = [err.message]))
-    },
-  },
 
-  async mounted () {
-    const { bearer } = await this.$axios.$post('/api/v1/login', {
-      username: 'front-app',
-      password: 'pass01',
-    })
-    this.bearerToken = bearer
+      if (this.rules.email(v) === true) {
+        await this.$axios
+          .get(`/modules/apostrophe-users/check-email/${v}`)
+          .then(res => (this.emailErrors = res.data.exists ? ['Email already exists'] : []))
+          .catch(() => (this.emailErrors = ['Invalid email address']))
+      }
+    },
   },
 
   methods: {
     ...mapActions('snackbar', ['displaySnack']),
 
     async register() {
-      if (this.$refs.form.validate() && this.bearerToken) {
+      if (this.$refs.form.validate()) {
         this.loading = true
         try {
-          await this.$axios.post('/api/v1/customers',
-          {
-            title: this.name,
+          await this.$axios.post('/modules/apostrophe-users/register', {
             email: this.email,
             password: this.password,
-          },
-          {
-            headers: { Authorization: `Bearer ${this.bearerToken}` },
           })
+
           this.loading = false
           this.reset()
           this.displaySnack({ message: 'Registration confirmed' })

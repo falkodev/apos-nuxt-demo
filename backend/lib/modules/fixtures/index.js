@@ -15,15 +15,15 @@ module.exports = {
 
     async function runBasicUsers() {
       try {
-        self.apos.log.info('******** Start basic users fixtures ********')
+        self.apos.log.info('******** Start admin user fixtures ********')
         const removedPieces = await self.apos.docs.db.remove({
           type: 'apostrophe-user',
-          username: { $in: ['admin', 'front-app'] },
+          username: { $in: ['admin'] },
         })
         const usersCollection = self.apos.db.collection('aposUsersSafe')
-        const removedUsers = await usersCollection.remove({ username: { $in: ['admin', 'front-app'] } })
+        const removedUsers = await usersCollection.remove({ username: 'admin' })
         if (removedPieces.length > 0) {
-          self.apos.log.info(`Users "admin" and "front-app" removed: ${removedUsers.result}`)
+          self.apos.log.info(`User "admin": ${removedUsers.result}`)
         }
 
         let adminGroup = await self.apos.groups.find(req, { title: 'admin' }).permission(false).toObject()
@@ -34,16 +34,6 @@ module.exports = {
             { permissions: false },
           )
           self.apos.log.info('Admin group created')
-        }
-
-        let guestGroup = await self.apos.groups.find(req, { title: 'guest' }).permission(false).toObject()
-        if (!guestGroup) {
-          guestGroup = await self.apos.groups.insert(
-            req,
-            { title: 'guest', permissions: ['edit-customer'] },
-            { permissions: false },
-          )
-          self.apos.log.info('Guest group created')
         }
 
         await self.apos.users.insert(
@@ -58,18 +48,7 @@ module.exports = {
           { permissions: false },
         )
 
-        await self.apos.users.insert(
-          req,
-          {
-            username: 'front-app',
-            password: 'pass01',
-            title: 'front-app',
-            firstName: 'front-app',
-            groupIds: [guestGroup._id],
-          },
-          { permissions: false },
-        )
-        self.apos.log.info('Users "admin" and "front-app" added')
+        self.apos.log.info('User "admin" added')
       } catch (error) {
         self.apos.log.error(`Error in runBasicUsers: ${error.message}`)
       }

@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { mapActions, mapMutations } from 'vuex'
+import { mapActions } from 'vuex'
 import RegisterModal from '~/components/RegisterModal'
 
 export default {
@@ -83,25 +83,24 @@ export default {
   },
 
   methods: {
-    ...mapActions(['getProfile']),
     ...mapActions('snackbar', ['displaySnack']),
-    ...mapMutations(['setLogged']),
 
     async login() {
       try {
         this.loading = true
-        await this.$auth.loginWith('local', {
+        const response = await this.$auth.loginWith('local', {
           data: {
             username: this.email,
             password: this.password,
           },
         })
-        await this.getProfile()
-        this.setLogged(true)
-        if (this.redirectTo === '/') {
-          this.$router.push('/account/dashboard')
+
+        const user = {
+          email: this.email,
+          bearer: response.data.bearer,
         }
-        this.displaySnack({ message: 'Welcome back', color: 'success' })
+        this.$auth.setUser(user)
+        this.displaySnack({ message: 'Welcome', color: 'success' })
       } catch (e) {
         this.displaySnack({ message: 'Error', color: 'error' })
       } finally {

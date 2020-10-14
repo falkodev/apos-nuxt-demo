@@ -53,8 +53,8 @@ module.exports = {
    */
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
-    baseURL: process.env.BASE_URL || 'http://localhost:1337/apos',
-    browserBaseURL: 'http://localhost:1337/apos',
+    baseURL: process.env.BASE_URL || 'http://localhost:1337/cms',
+    browserBaseURL: 'http://localhost:1337/cms',
   },
 
   auth: {
@@ -67,7 +67,7 @@ module.exports = {
         endpoints: {
           login: { url: '/api/v1/login', method: 'post', propertyName: 'bearer' },
           logout: { url: '/api/v1/logout', method: 'post' },
-          user: { url: '/modules/apostrophe-users/logged', method: 'get', propertyName: false },
+          user: false,
         },
       },
     },
