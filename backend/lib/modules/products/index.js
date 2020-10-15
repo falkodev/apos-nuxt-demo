@@ -19,7 +19,8 @@ module.exports = {
     {
       name: 'basics',
       label: 'Basics',
-      fields: ['title', 'slug', 'description', 'picture', 'published', 'tags'],
+      fields: ['title', 'slug', 'description', 'picture', 'published'],
     },
   ],
+  removeFields: ['tags'],
 }

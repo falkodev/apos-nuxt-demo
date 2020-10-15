@@ -252,5 +252,82 @@ const response = await this.$auth.loginWith('local', {
 
 Apostrophe replies to this action by checking the password with its saved hash and sends back a bearer token.
 
-// TODO: create an "order" module in apostrophe and join orders to users
-// TODO: add a "Order" button to every dish (and change "Order" to "Login" in the homepage coming from Apos)
+To order food, we need a dedicated module. Create a new folder under `backend/lib/modules` and name it `orders`. Create an `index.js` file in it with this content:
+
+```js
+module.exports = {
+  extend: 'apostrophe-pieces',
+  name: 'order',
+  alias: 'order',
+  restApi: true,
+  addFields: [
+    {
+      name: 'date',
+      type: 'date',
+      required: true,
+    },
+    {
+      name: '_products',
+      type: 'joinByArray',
+      required: true,
+    },
+    {
+      name: '_customer',
+      type: 'joinByOne',
+      withType: 'apostrophe-user',
+      required: true,
+    },
+  ],
+  arrangeFields: [
+    {
+      name: 'basics',
+      label: 'Basics',
+      fields: ['title', 'date', '_products', '_customer', 'published'],
+    },
+  ],
+  removeFields: ['slug', 'tags'],
+}
+```
+
+In this module, there are 2 joins: one for dished, one for the customer who ordered them. You can add multiple dishes to an order because it is a `joinByArray` but only one customer through `joinByOne`.
+
+Again, this module is RESTified because of the `restApi` parameter.
+
+Activate this module by adding it to `backend/app.js`:
+
+```js
+module.exports = require('apostrophe')({
+  ...
+  modules: {
+    ...
+    orders: {}
+  }
+})
+```
+
+Now, when `http://localhost/cms` is reloaded, there is a new item in the admin bar:
+
+<br><img src=".readme-assets/admin-bar-orders.png" width="800"><br>
+
+When a customer will create an order, his `apostrophe-user` account will be used to authenticate the call in the backend. Currently, the `customer` group has no permission.
+Add the `edit-order` permission to this group in `backend/lib/modules/apostrophe-users/index.js`:
+
+```js
+module.exports = {
+  groups: [
+    {
+      title: 'customer',
+      permissions: ['edit-order'],
+    },
+    ...
+  ]
+  ...
+}
+```
+
+Apostrophe has default permissions. When a `admin-name-of-the-module` permission is added to a group of users, they can manage all documents relative to this module. However, the `edit-name-of-the-module` permission restricts modifications to the documents they created individually. This is exactly what we need. In our case, a customer will only manage its own orders.
+
+Let's create a Vue component to add orders in the frontend.
+
+// TODO: change "Order" to "Login" in the homepage coming from Apos
+// TODO: create a frontend page "/order" with all dishes for the current order and a "Proceed" button + badge updated on each new dish
