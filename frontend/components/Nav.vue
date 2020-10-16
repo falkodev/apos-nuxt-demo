@@ -25,7 +25,7 @@
 
     <v-toolbar-items>
       <template v-if="auth.loggedIn">
-        <v-btn text to="/account-dashboard" nuxt>My account</v-btn>
+        <v-btn text>My Order</v-btn>
         <v-btn text @click="logout">Logout</v-btn>
       </template>
       <template v-else>
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex'
+import { mapState } from 'vuex'
 import LoginModal from '~/components/LoginModal'
 import RegisterModal from '~/components/RegisterModal'
 
@@ -47,15 +47,13 @@ export default {
     RegisterModal,
   },
 
-  computed: mapState(['auth']),
+  computed: {
+    ...mapState(['auth']),
+  },
 
   methods: {
-    ...mapMutations(['setLogged', 'setProfile']),
-
-    async logout() {
-      await this.$auth.logout()
-      this.setLogged(false)
-      this.setProfile({})
+    logout() {
+      this.$auth.logout()
     },
   },
 }
@@ -70,5 +68,11 @@ export default {
 }
 .v-toolbar__content {
   padding: 0 !important;
+}
+.v-badge__badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
 }
 </style>
