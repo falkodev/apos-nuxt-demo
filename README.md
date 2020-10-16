@@ -329,5 +329,207 @@ Apostrophe has default permissions. When a `admin-name-of-the-module` permission
 
 Let's create a Vue component to add orders in the frontend.
 
+Start by creating a state `order` and a mutation in `frontend/store/index.js`:
+
+```js
+import Vue from 'vue'
+
+export const state = () => ({
+  order: {},
+})
+
+export const mutations = {
+  addToOrder(state, payload) {
+    Vue.set(state.order, payload, (state.order[payload] || 0) + 1)
+  },
+}
+```
+Here, we declare a empty `order` and each time `addToOrder` is called, it adds a new dish to the order.
+If this is not familiar to you, consult the [Vuex documentation](https://vuex.vuejs.org/), the state manager from Vue.
+
+Import the mutation in `frontend/pages/index.vue` and add it to the `methods` used in this component:
+
+```js
+<script>
+  import { mapMutations } from 'vuex'
+  import LoginModal from '~/components/LoginModal'
+
+  export default {
+    components: {
+      LoginModal,
+    },
+
+    async asyncData({ $axios }) {
+      ...
+    },
+
+    methods: {
+      ...mapMutations(['addToOrder']),
+      add(product) {
+        this.addToOrder(product)
+      },
+    },
+  }
+</script>
+```
+
+Still in this file, add 2 elements to the `template` part, under the `img` tag:
+
+```html
+<v-btn v-if="$store.state.auth && $store.state.auth.loggedIn" color="primary" class="white-text" @click="add(product.title)">Order</v-btn>
+<LoginModal v-else classes="primary white-text" :block="true" :redirect-to="$route.fullPath" label="Order" />
+```
+
+The template should look like this:
+```html
+<template>
+  <section class="homepage">
+    <!-- eslint-disable-next-line vue/no-v-html -->
+    <div v-html="content"></div>
+    <div class="homepage-products">
+      <div v-for="product in products" :key="product._id" class="homepage-products__item">
+        <img :src="product.picture._urls['one-third']" />
+        <v-btn v-if="$store.state.auth && $store.state.auth.loggedIn" color="primary" class="white-text" @click="add(product.title)">Order</v-btn>
+        <LoginModal v-else classes="primary white-text" :block="true" :redirect-to="$route.fullPath" label="Order" />
+        <span>{{ product.description }}</span>
+      </div>
+    </div>
+  </section>
+</template>
+```
+
+When logged in, the user sees an "Order" button. When it clicks on it, it triggers the Vuex mutation `addToOrder`.
+
+
+Add a badge next to "My Order", in the top bar. Go to `frontend/components/Nav.vue` and add this around "My Order" in the template:
+
+```html
+<v-badge color="green" :content="counter">My Order</v-badge>
+```
+
+then modify the `computed` part in `<script>` this way:
+
+```js
+computed: {
+  ...mapState(['auth', 'order']),
+  counter() {
+    if (!Object.values(this.order).length) {
+      return '0'
+    }
+    return Object.values(this.order).reduce((acc, cur) => (acc += cur), 0)
+  },
+},
+```
+
+Also, add a `scss` rule to `<style>` render the badge correctly:
+
+```css
+.v-badge__badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+```
+
+The whole Nav component is the following:
+
+```js
+<template>
+  <v-app-bar app hide-on-scroll flat>
+    <!-- small mobile screens only -->
+    <template v-if="$vuetify.breakpoint.xsOnly">
+      <v-menu offset-y>
+        <template #activator="{ on }">
+          <v-app-bar-nav-icon v-on="on" />
+        </template>
+        <v-list>
+          <v-list-item>
+            <v-btn class="v-btn--mobile v-btn--home" text to="/" nuxt block> Home </v-btn>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </template>
+
+    <!-- large smartphones, tablets and desktop view -->
+    <template v-else>
+      <v-toolbar-items>
+        <v-btn class="v-btn--home" text to="/" nuxt> Home </v-btn>
+      </v-toolbar-items>
+    </template>
+
+    <v-spacer />
+
+    <v-toolbar-items>
+      <template v-if="auth.loggedIn">
+        <v-btn text>
+          <v-badge color="green" :content="counter">My Order</v-badge>
+        </v-btn>
+        <v-btn text @click="logout">Logout</v-btn>
+      </template>
+      <template v-else>
+        <RegisterModal />
+        <LoginModal :redirect-to="$route.fullPath" />
+      </template>
+    </v-toolbar-items>
+  </v-app-bar>
+</template>
+
+<script>
+import { mapState } from 'vuex'
+import LoginModal from '~/components/LoginModal'
+import RegisterModal from '~/components/RegisterModal'
+
+export default {
+  components: {
+    LoginModal,
+    RegisterModal,
+  },
+
+  computed: {
+    ...mapState(['auth', 'order']),
+    counter() {
+      if (!Object.values(this.order).length) {
+        return '0'
+      }
+      return Object.values(this.order).reduce((acc, cur) => (acc += cur), 0)
+    },
+  },
+
+  methods: {
+    logout() {
+      this.$auth.logout()
+    },
+  },
+}
+</script>
+
+<style lang="scss">
+.v-btn--mobile:hover {
+  height: 100%;
+}
+.v-btn--home::before {
+  opacity: 0 !important;
+}
+.v-toolbar__content {
+  padding: 0 !important;
+}
+.v-badge__badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+</style>
+```
+
+As the state is updated through the mutation `addToOrder`, components that listen to the `order` state are aware of the change. This updates the badge next to "My Order", in the top bar.
+
+Order several dishes to see the badge increasing.
+
+That would be nice to have the list of dishes we put in this order. For that, create a page by adding `order.vue` file in `frontent/pages`. Nuxt is smart enough to understand it has to update its internal router and add a route when a file is added into `pages`. By adding a `order` Vue component, it will automatically create the `/order` route.
+
+
+
 // TODO: change "Order" to "Login" in the homepage coming from Apos
 // TODO: create a frontend page "/order" with all dishes for the current order and a "Proceed" button + badge updated on each new dish
