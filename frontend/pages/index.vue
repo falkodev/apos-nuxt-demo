@@ -5,6 +5,15 @@
     <div class="homepage-products">
       <div v-for="product in products" :key="product._id" class="homepage-products__item">
         <img :src="product.picture._urls['one-third']" />
+        <v-btn
+          v-if="$store.state.auth && $store.state.auth.loggedIn"
+          color="primary"
+          class="white-text"
+          @click="add(product)"
+        >
+          Order
+        </v-btn>
+        <LoginModal v-else classes="primary white-text" :block="true" :redirect-to="$route.fullPath" label="Order" />
         <span>{{ product.description }}</span>
       </div>
     </div>
@@ -12,8 +21,13 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
+import LoginModal from '~/components/LoginModal'
+
 export default {
-  components: {},
+  components: {
+    LoginModal,
+  },
 
   async asyncData({ $axios }) {
     let products = []
@@ -59,6 +73,13 @@ export default {
         products: [],
       }
     }
+  },
+
+  methods: {
+    ...mapMutations(['addToOrder']),
+    add(product) {
+      this.addToOrder(product)
+    },
   },
 }
 </script>

@@ -29,5 +29,6 @@ module.exports = require('apostrophe')({
     'link-widgets': {},
     'text-link-widgets': {},
     products: {},
+    orders: {},
   },
 })

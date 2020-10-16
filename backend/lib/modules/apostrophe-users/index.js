@@ -4,7 +4,7 @@ module.exports = {
   groups: [
     {
       title: 'customer',
-      permissions: [''],
+      permissions: ['edit-order'],
     },
     {
       title: 'admin',
@@ -64,6 +64,27 @@ module.exports = {
       } catch (error) {
         self.apos.log.error(err)
         res.status(500).send('system error')
+      }
+    })
+
+    self.route('get', 'user', async (req, res) => {
+      try {
+        if (!req.headers.authorization) {
+          throw new Error('missing authorization token')
+        }
+
+        const token = req.headers.authorization.split('Bearer ')[1]
+        self.bearerTokensCollection = self.apos.db.collection('aposBearerTokens')
+        const bearer = await self.bearerTokensCollection.findOne({ _id: token })
+        if (bearer) {
+          const user = await self.find(req, { _id: bearer.userId }, { _id: 1 }).permission(false).toObject()
+
+          return res.status(200).send(user)
+        } else {
+          throw new Error('bearer token not found')
+        }
+      } catch (error) {
+        self.apos.log.error(error)
       }
     })
   },

@@ -1,6 +1,8 @@
 <template>
   <v-layout row justify-center>
-    <v-btn v-show="!userEmail" class="activator" :block="block" :class="classes" text @click="dialog = true"> {{ label }} </v-btn>
+    <v-btn v-show="!userEmail" class="activator" :block="block" :class="classes" text @click="dialog = true">
+      {{ label }}
+    </v-btn>
     <v-dialog v-model="dialog" max-width="600px" :fullscreen="$vuetify.breakpoint.mdAndDown">
       <!-- prettier-ignore -->
       <client-only>

@@ -25,7 +25,9 @@
 
     <v-toolbar-items>
       <template v-if="auth.loggedIn">
-        <v-btn text>My Order</v-btn>
+        <v-btn text to="/order" nuxt>
+          <v-badge color="green" :content="counter"> My order </v-badge>
+        </v-btn>
         <v-btn text @click="logout">Logout</v-btn>
       </template>
       <template v-else>
@@ -48,7 +50,13 @@ export default {
   },
 
   computed: {
-    ...mapState(['auth']),
+    ...mapState(['auth', 'order']),
+    counter() {
+      if (!Object.values(this.order).length) {
+        return '0'
+      }
+      return Object.values(this.order).reduce((acc, cur) => (acc += cur.quantity), 0)
+    },
   },
 
   methods: {
