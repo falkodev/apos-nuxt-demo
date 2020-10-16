@@ -2,7 +2,7 @@
   <transition :css="false" @before-enter="enter">
     <v-snackbar :value="show" :color="color" :timeout="timeout" :top="top" :bottom="bottom">
       <label>{{ message }}</label>
-      <v-btn color="white" text @click.native="resetSnack">
+      <v-btn color="white" class="v-btn--snackbar" text @click.native="resetSnack">
         <v-icon class="outlined" small @click.native="resetSnack"> close </v-icon>
       </v-btn>
     </v-snackbar>
@@ -32,6 +32,16 @@ export default {
 .v-snack--bottom {
   bottom: 0px;
   animation: slideBottom var(--d, 6s) ease;
+}
+
+.v-snack {
+  padding-top: 0 !important;
+}
+
+.v-btn--snackbar {
+  margin-left: auto;
+  margin-right: -30px;
+  padding-right: 0 !important;
 }
 
 @keyframes slideTop {

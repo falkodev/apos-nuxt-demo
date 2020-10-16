@@ -95,7 +95,10 @@ export default {
           },
         })
 
+        const aposUser = await this.$axios.$get('/modules/apostrophe-users/user', {})
+
         const user = {
+          _id: aposUser._id,
           email: this.email,
           bearer: response.data.bearer,
         }
