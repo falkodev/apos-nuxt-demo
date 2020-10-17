@@ -270,6 +270,13 @@ module.exports = {
       name: '_products',
       type: 'joinByArray',
       required: true,
+      relationship: [
+        {
+          name: 'quantity',
+          label: 'Quantity',
+          type: 'integer',
+        }
+      ],
     },
     {
       name: '_customer',
@@ -607,7 +614,8 @@ export default {
         await this.$axios.post('/api/v1/orders', {
           title: `${this.auth.user.email} - ${date}`,
           customerId: this.auth.user._id,
-          productsIds: Object.values(this.order).map(product => product._id),
+          productsIds: arr.map(product => product._id),
+          productsRelationships: arr.reduce((acc, cur) => ({ ...acc, [cur._id]: { quantity: cur.quantity } }), {}),
           date,
         })
 
@@ -675,4 +683,41 @@ export const mutations = {
 }
 ```
 
-// TODO: relationship in _products for quantities
+The `order` page is ready. Order food in the homepage, click multiple times on a "Order" button to add the same dish several times. Now, click in "My Order" in the top bar, you are being redirected to "/order" and will see a page similar to this:
+
+<br><img src=".readme-assets/order-frontend.png" width="800"><br>
+
+You can adjust the quantities here also. Then, click on "Proceed". It will generate a POST request and contact the backend REST API. Apostrophe will handle that and create the corresponding order. You can go the backend and check that by clicking on the "Orders" button in the Apostrophe admin bar on `http://localhost/cms` (or `http://localhost:1337/cms`).
+
+<br><img src=".readme-assets/order-backend.png" width="800"><br>
+
+You can even click on the "Relationship" button on a joined product, and see the right quantity was sent.
+
+<br><img src=".readme-assets/order-relationship.png" width="800"><br>
+
+<br><img src=".readme-assets/order-quantity.png" width="800"><br>
+
+This happened thanks to the ["relationship" field](https://docs.apostrophecms.org/reference/field-types/joinbyarray.html#relationship-properties-and-joinbyarray) in Apostrophe. In the frontend call, there was this:
+
+```js
+productsRelationships: arr.reduce((acc, cur) => ({ ...acc, [cur._id]: { quantity: cur.quantity } }), {}),
+```
+
+indicating to add an object `productsRelationships` to the new order. Apostrophe understands this as a property of the joined field `_products` as specified in the `backend/order/index.js` schema:
+
+```js
+{
+  name: '_products',
+  type: 'joinByArray',
+  required: true,
+  relationship: [
+    {
+      name: 'quantity',
+      label: 'Quantity',
+      type: 'integer',
+    }
+  ],
+},
+```
+
+The restaurant has all it needs to handle orders from their online customers. This tutorial had the ambition to demonstrate how nicely Apostrophe can interact with frontend frameworks such as Vue/Nuxt in a Docker environment. We stop here to keep it simple. We could have added email notifications, online payments and many options available in the numerous plugins available in the Apostrophe world. You can discover more by browsing the [online documentation](https://docs.apostrophecms.org/), exploring plugins to [extend our open-source CMS](https://apostrophecms.com/extend) or by joining our [vibrant community](https://apostrophecms.com/community).
