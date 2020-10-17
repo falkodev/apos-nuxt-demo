@@ -15,6 +15,13 @@ module.exports = {
       name: '_products',
       type: 'joinByArray',
       required: true,
+      relationship: [
+        {
+          name: 'quantity',
+          label: 'Quantity',
+          type: 'integer',
+        }
+      ],
     },
     {
       name: '_customer',

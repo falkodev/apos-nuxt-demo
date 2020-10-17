@@ -71,11 +71,13 @@ export default {
     async proceed() {
       this.loading = true
       try {
+        const arr = Object.values(this.order)
         const date = Date.now()
         await this.$axios.post('/api/v1/orders', {
           title: `${this.auth.user.email} - ${date}`,
           customerId: this.auth.user._id,
-          productsIds: Object.values(this.order).map(product => product._id),
+          productsIds: arr.map(product => product._id),
+          productsRelationships: arr.reduce((acc, cur) => ({ ...acc, [cur._id]: { quantity: cur.quantity } }), {}),
           date,
         })
 
