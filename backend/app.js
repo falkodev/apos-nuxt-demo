@@ -21,7 +21,6 @@ module.exports = require('apostrophe')({
     'apostrophe-express': {},
     'apostrophe-headless': {
       bearerTokens: true,
-      // apiKeys: [],
     },
     'apostrophe-pages': {},
     'columns-layout-widgets': {},

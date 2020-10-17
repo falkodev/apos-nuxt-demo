@@ -47,7 +47,6 @@ module.exports = {
 
         return res.status(200).send('success')
       } catch (error) {
-        console.log('error', require('util').inspect(error, { colors: true, depth: 1 }))
         self.apos.log.error('Error in register', error.message)
         return res.status(500).send('error')
       }
