@@ -68,7 +68,7 @@ If you have Docker installed, run `make` otherwise `npm run install-app`. `http:
 For Docker, you can observe the `docker-compose.yml` file, describing how the containers are organized. There will be:
 - a `demo-db` container for the MongoDB image
 - a `demo-backend` container for Apostrophe, using MongoDB
-- a `demo-frontend` container for Nuxt, contacting the backend on `http://demo-backend:1337/cms``
+- a `demo-frontend` container for Nuxt, contacting the backend on `http://demo-backend:1337/cms`
 - a `demo-reverse-proxy` container for Nginx
 
 The `reverse-proxy/local.conf` is interesting to understand how requests are dispatched.
@@ -89,7 +89,7 @@ location /cms/ {
 
 Everything on port localhost:80 will be redirected to Nuxt, except for urls pointing to `/cms`, redirected to Apostrophe.
 
-On its configuration, Apostrophe has a matching prefix:
+In its configuration, Apostrophe has a matching prefix:
 
 ```js
 // in backend/app.js
@@ -159,7 +159,7 @@ This way, products are automatically exposed on `/api/v1/products`. On the front
 const { results } = await $axios.$get('/api/v1/products')
 ```
 
-The products are displayed in the component's template part, with a classical `v-for` loop:
+The products are displayed in the component's template part, with a standard `v-for` loop:
 
 ```html
 <!-- in frontend/pages/index.vue -->
@@ -236,11 +236,11 @@ Now you can go to the frontend and reload the page (`http://localhost` on Docker
 
 <br><img src=".readme-assets/frontend-homepage-2.png" width="800"><br>
 
-How does this work? In the `index.vue` component (in `frontend/pages/`), the `asyncData` method fetches the pages exposed by Apostrophe, and finds the homepage we created. You can click the "Order" button, it should lead you to the login page.
+How does this work? In the `index.vue` component (in `frontend/pages/`), the `asyncData` method fetches the pages exposed by Apostrophe, and finds the homepage we created. You can click the "Login" button, it should lead you to the login page.
 
 Now, let's create a user and order food!
 
-Click on "Register" in the frontend bar. Add an email and a password. The registration should be successful. Now click on the "Login" button and enter the credentials you used in the previous step. A welcome message is displayed on success.
+Click on "Register" in the frontend bar. Add an email and a password. The registration should be successful. Now click on the "Login" button and enter the credentials you have just used. A welcome message is displayed on success.
 
 How does this work?
 
@@ -298,7 +298,7 @@ used during the login process in `frontend/components/Login.vue`:
 const aposUser = await this.$axios.$get('/modules/apostrophe-users/user', {})
 ```
 
-This backend custom route receives a request with a bearer token (generated when the user send his credentials). Apostrophe recognizes it is a legitimate request because it compares this token to the tokens kept in its database. Then, it sends back the `_id` of the current user. This way, later, when the user will order, it will be identified by its ID.
+This backend custom route receives a request with a bearer token (generated when the user sends his credentials). Apostrophe recognizes it is a legitimate request because it compares this token to the tokens kept in its database. Then, it sends back the `_id` of the current user. This way, later, when the user will order, it will be identified by its ID.
 
 To order food, we need a dedicated module. Create a new folder under `backend/lib/modules` and name it `orders`. Create an `index.js` file in it with this content:
 
@@ -344,7 +344,7 @@ module.exports = {
 }
 ```
 
-In this module, there are 2 joins: one for dishes, one for the customer who ordered them. You can add multiple dishes to an order because it is a `joinByArray` but only one customer through `joinByOne`.
+In this module, there are 2 joins: one for dishes (`_products`), one for the customer who ordered them (`_customer`). You can add multiple dishes to an order because it is a `joinByArray` but only one customer through `joinByOne`.
 
 Again, this module is RESTified because of the `restApi` parameter.
 
@@ -355,16 +355,18 @@ module.exports = require('apostrophe')({
   ...
   modules: {
     ...
-    orders: {}
+    products: {},
+    orders: {},
   }
 })
 ```
 
-Now, when `http://localhost/cms` is reloaded, there is a new item in the admin bar:
+Now, when `http://localhost/cms` is reloaded, there is a new "Orders" item in the admin bar:
 
 <br><img src=".readme-assets/admin-bar-orders.png" width="800"><br>
 
-When a customer will create an order, his `apostrophe-user` account will be used to authenticate the call in the backend. Currently, the `customer` group has no permission.
+When a customer will create an order, his `apostrophe-user` account will be used to authenticate the call in the backend. The users registered from the frontend are automatically part of the `customer` users group (see the `register` route in `backend/lib/modules/apostrophe-users/index.js` we mentioned earlier). Currently, this group has no permission.
+
 Add the `edit-order` permission to this group in `backend/lib/modules/apostrophe-users/index.js`:
 
 ```js
@@ -456,7 +458,7 @@ The template should look like this:
 </template>
 ```
 
-When logged in, the user sees an "Order" button. When it clicks on it, it triggers the Vuex mutation `addToOrder`.
+When logged in, the user sees an "Order" button under every dish on the homepage. When it clicks on it, it triggers the Vuex mutation `addToOrder`.
 
 Add a badge next to "My Order", in the top bar. Go to `frontend/components/Nav.vue`, look for the words "My Order" in the template and replace the line by the following:
 
@@ -478,7 +480,7 @@ computed: {
 },
 ```
 
-Also, add a `scss` rule to `<style>` render the badge correctly:
+Also, add a `scss` rule to `<style>` to render the badge correctly:
 
 ```css
 .v-badge__badge {
