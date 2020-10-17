@@ -69,10 +69,4 @@ export default {
 .v-toolbar__content {
   padding: 0 !important;
 }
-.v-badge__badge {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-}
 </style>

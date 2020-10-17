@@ -245,7 +245,7 @@ Click on "Register" in the frontend bar. Add an email and a password. The regist
 How does this work?
 
 Edit `frontend/components/Register.vue`. You can observe that the component calls `/modules/apostrophe-users/register` when submitting the form.
-On the backend, the `apostrophe-users` module has a custom route:
+On the backend, the `apostrophe-users` module in `backend/lib/modules/apostrophe-users/index.js` has a custom route:
 
 ```js
 self.route('post', 'register', async (req, res) => { ... }
@@ -285,6 +285,20 @@ const response = await this.$auth.loginWith('local', {
 ```
 
 Apostrophe replies to this action by checking the password with its saved hash and sends back a bearer token.
+
+Still in `backend/lib/modules/apostrophe-users/index.js`, you can pay attention to the other custom routes, especially this one:
+
+```js
+self.route('get', 'user', async (req, res) => { ... })
+```
+
+used during the login process in `frontend/components/Login.vue`:
+
+```js
+const aposUser = await this.$axios.$get('/modules/apostrophe-users/user', {})
+```
+
+This backend custom route receives a request with a bearer token (generated when the user send his credentials). Apostrophe recognizes it is a legitimate request because it compares this token to the tokens kept in its database. Then, it sends back the `_id` of the current user. This way, later, when the user will order, it will be identified by its ID.
 
 To order food, we need a dedicated module. Create a new folder under `backend/lib/modules` and name it `orders`. Create an `index.js` file in it with this content:
 
@@ -381,7 +395,10 @@ export const state = () => ({
 
 export const mutations = {
   addToOrder(state, payload) {
-    Vue.set(state.order, payload, (state.order[payload] || 0) + 1)
+    Vue.set(state.order, payload.slug, {
+      ...payload,
+      quantity: state.order[payload.slug] ? state.order[payload.slug].quantity + 1 : 1,
+    })
   },
 }
 ```
@@ -417,7 +434,7 @@ Import the mutation in `frontend/pages/index.vue` and add it to the `methods` us
 Still in this file, add 2 elements to the `template` part, under the `img` tag:
 
 ```html
-<v-btn v-if="$store.state.auth && $store.state.auth.loggedIn" color="primary" class="white-text" @click="add(product.title)">Order</v-btn>
+<v-btn v-if="$store.state.auth && $store.state.auth.loggedIn" color="primary" class="white-text" @click="add(product)">Order</v-btn>
 <LoginModal v-else classes="primary white-text" :block="true" :redirect-to="$route.fullPath" label="Order" />
 ```
 
@@ -430,7 +447,7 @@ The template should look like this:
     <div class="homepage-products">
       <div v-for="product in products" :key="product._id" class="homepage-products__item">
         <img :src="product.picture._urls['one-third']" />
-        <v-btn v-if="$store.state.auth && $store.state.auth.loggedIn" color="primary" class="white-text" @click="add(product.title)">Order</v-btn>
+        <v-btn v-if="$store.state.auth && $store.state.auth.loggedIn" color="primary" class="white-text" @click="add(product)">Order</v-btn>
         <LoginModal v-else classes="primary white-text" :block="true" :redirect-to="$route.fullPath" label="Order" />
         <span>{{ product.description }}</span>
       </div>
@@ -441,10 +458,10 @@ The template should look like this:
 
 When logged in, the user sees an "Order" button. When it clicks on it, it triggers the Vuex mutation `addToOrder`.
 
-Add a badge next to "My Order", in the top bar. Go to `frontend/components/Nav.vue` and add this around "My Order" in the template:
+Add a badge next to "My Order", in the top bar. Go to `frontend/components/Nav.vue`, look for the words "My Order" in the template and replace the line by the following:
 
 ```html
-<v-badge color="green" :content="counter">My Order</v-badge>
+<v-btn text to="/order" nuxt><v-badge color="green" :content="counter">My Order</v-badge></v-btn>
 ```
 
 then modify the `computed` part in `<script>` this way:
@@ -456,7 +473,7 @@ computed: {
     if (!Object.values(this.order).length) {
       return '0'
     }
-    return Object.values(this.order).reduce((acc, cur) => (acc += cur), 0)
+    return Object.values(this.order).reduce((acc, cur) => (acc += cur.quantity), 0)
   },
 },
 ```
@@ -502,7 +519,7 @@ The whole `Nav.vue` component is the following:
 
     <v-toolbar-items>
       <template v-if="auth.loggedIn">
-        <v-btn text>
+        <v-btn text to="/order" nuxt>
           <v-badge color="green" :content="counter">My Order</v-badge>
         </v-btn>
         <v-btn text @click="logout">Logout</v-btn>
@@ -532,7 +549,7 @@ export default {
       if (!Object.values(this.order).length) {
         return '0'
       }
-      return Object.values(this.order).reduce((acc, cur) => (acc += cur), 0)
+      return Object.values(this.order).reduce((acc, cur) => (acc += cur.quantity), 0)
     },
   },
 
@@ -644,6 +661,7 @@ export default {
       this.loading = true
       try {
         const date = Date.now()
+        const arr = Object.values(this.order)
         await this.$axios.post('/api/v1/orders', {
           title: `${this.auth.user.email} - ${date}`,
           customerId: this.auth.user._id,
@@ -716,7 +734,9 @@ export const mutations = {
 }
 ```
 
-The `order` page is ready. Order food in the homepage, click multiple times on an "Order" button to add the same dish several times. Now, click in "My Order" in the top bar, you are being redirected to "/order" and will see a page similar to this:
+The `order` page is ready. In the frontend, log out and log back in.
+
+Order food in the homepage, click multiple times on an "Order" button to add the same dish several times. Now, click in "My Order" in the top bar, you are being redirected to "/order" and will see a page similar to this:
 
 <br><img src=".readme-assets/order-frontend.png" width="800"><br>
 
