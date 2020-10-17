@@ -720,4 +720,8 @@ indicating to add an object `productsRelationships` to the new order. Apostrophe
 },
 ```
 
-The restaurant has all it needs to handle orders from their online customers. This tutorial had the ambition to demonstrate how nicely Apostrophe can interact with frontend frameworks such as Vue/Nuxt in a Docker environment. We stop here to keep it simple. We could have added email notifications, online payments and many options available in the numerous plugins available in the Apostrophe world. You can discover more by browsing the [online documentation](https://docs.apostrophecms.org/), exploring plugins to [extend our open-source CMS](https://apostrophecms.com/extend) or by joining our [vibrant community](https://apostrophecms.com/community).
+The restaurant has all it needs to handle orders from their online customers. This tutorial had the ambition to demonstrate how nicely Apostrophe can interact with frontend frameworks such as Vue/Nuxt in a Docker environment.
+
+You can access the [full version here](https://github.com/falkodev/apos-nuxt-demo/tree/develop).
+
+We stop here to keep it simple. We could have added email notifications, online payments and many options available in the numerous plugins available in the Apostrophe world. You can discover more by browsing the [online documentation](https://docs.apostrophecms.org/), exploring plugins to [extend our open-source CMS](https://apostrophecms.com/extend) or by joining our [vibrant community](https://apostrophecms.com/community).
