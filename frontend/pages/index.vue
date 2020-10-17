@@ -66,7 +66,7 @@ export default {
 <style lang="scss">
 .homepage {
   width: 100%;
-  padding: 0px;
+  padding: 0;
 }
 
 .homepage-products {

@@ -234,7 +234,7 @@ And the result, still in Apostrophe:
 
 Now you can go to the frontend and reload the page (`http://localhost` on Docker, `http://localhost:3333` otherwise).
 
-<br><img src=".readme-assets/frontend-homepage-new.png" width="800"><br>
+<br><img src=".readme-assets/frontend-homepage-2.png" width="800"><br>
 
 How does this work? In the `index.vue` component (in `frontend/pages/`), the `asyncData` method fetches the pages exposed by Apostrophe, and finds the homepage we created. You can click the "Order" button, it should lead you to the login page.
 
