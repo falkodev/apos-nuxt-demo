@@ -45,7 +45,7 @@ Restore in container:
 
 ### Fixtures
 
-docker-compose exec demo-backend node app fixtures:all
+`docker-compose exec demo-backend node app fixtures:all`
 
 ### Clear Docker logs
 
@@ -64,6 +64,40 @@ Start by cloning this project.
 `git clone git@github.com:falkodev/apos-nuxt-demo.git` //TODO: change url to an apostrophe one when ready
 
 If you have Docker installed, run `make` otherwise `npm run install-app`. `http://localhost:1337/cms` for the backend and `http://localhost:3333` for the frontend should be accessible (ports are not mandatory if you use Docker).
+
+For Docker, you can observe the `docker-compose.yml` file, describing how the containers are organized. There will be:
+- a `demo-db` container for the MongoDB image
+- a `demo-backend` container for Apostrophe, using MongoDB
+- a `demo-frontend` container for Nuxt, contacting the backend on `http://demo-backend:1337/cms``
+- a `demo-reverse-proxy` container for Nginx
+
+The `reverse-proxy/local.conf` is interesting to understand how requests are dispatched.
+
+```
+listen 80;
+server_name localhost;
+root /usr/share/nginx/frontend;
+
+location / {
+  proxy_pass http://demo-frontend:3333;
+}
+
+location /cms/ {
+  proxy_pass http://demo-backend:1337;
+}
+```
+
+Everything on port localhost:80 will be redirected to Nuxt, except for urls pointing to `/cms`, redirected to Apostrophe.
+
+On its configuration, Apostrophe has a matching prefix:
+
+```js
+// in backend/app.js
+prefix: '/cms',
+```
+
+This way, with Docker, you can access the frontend on  `http://localhost` and the backend on `http://localhost/cms`.
+
 
 We are going to create dishes for our customers. To facilitate this step, fixtures have been created. They will create an admin user on Apostrophe, and documents in the "Products" module.
 
@@ -143,7 +177,7 @@ The products are displayed in the component's template part, with a classical `v
 
 You can notice Apostrophe has automatically resized the pictures. We chose to display the "one-third" format here.
 
-Now, if you want to add text on this homepage, you could edit the Vue component, but it is not convenient. A better way is to edit the content in Apostrophe, and let it be displayed on the frontend.
+Now, if you want to add text on this homepage, you could edit the Vue component, but it is not convenient, as only developers can do it. A better way is let non-developers people edit the content in Apostrophe, and let it be displayed on the frontend.
 
 For that, a page type "homepage" has been configured on the backend:
 
@@ -186,7 +220,7 @@ Last step for this widget: you have access to "Rich Text" and "Link". Choose "Ri
 
 <br><img src=".readme-assets/rich-text.png" width="800"><br>
 
-To get the same color and background color, play the style selector in the rich-text toolbar:
+To get the same color and background color, play with the style selector in the rich-text toolbar:
 
 <br><img src=".readme-assets/style-selector.png"><br>
 
@@ -200,18 +234,18 @@ And the result, still in Apostrophe:
 
 Now you can go to the frontend and reload the page (`http://localhost` on Docker, `http://localhost:3333` otherwise).
 
-<br><img src=".readme-assets/frontend-homepage-new.png" width="800"><br>
+<br><img src=".readme-assets/frontend-homepage-2.png" width="800"><br>
 
-How does this work? Again, in the `index.vue` component (in `frontend/pages/`), the `asyncData` method fetches the pages exposed by Apostrophe, and finds the homepage we created. You can click the "Order" button, it should lead you to the login page.
+How does this work? In the `index.vue` component (in `frontend/pages/`), the `asyncData` method fetches the pages exposed by Apostrophe, and finds the homepage we created. You can click the "Order" button, it should lead you to the login page.
 
 Now, let's create a user and order food!
 
-Click on "Register" in the frontend bar. Add an email and a password. The registration should be successful. To check, now click on the "Login" button and enter the credentials you used in the previous step. A welcome message is display on success.
+Click on "Register" in the frontend bar. Add an email and a password. The registration should be successful. Now click on the "Login" button and enter the credentials you used in the previous step. A welcome message is displayed on success.
 
 How does this work?
 
-Edit `frontend/components/Register.vue`. You can observe the component calls `/modules/apostrophe-users/register` when submitting the form.
-On the backend, the `apostrophe-users` module has a custom route
+Edit `frontend/components/Register.vue`. You can observe that the component calls `/modules/apostrophe-users/register` when submitting the form.
+On the backend, the `apostrophe-users` module in `backend/lib/modules/apostrophe-users/index.js` has a custom route:
 
 ```js
 self.route('post', 'register', async (req, res) => { ... }
@@ -251,6 +285,20 @@ const response = await this.$auth.loginWith('local', {
 ```
 
 Apostrophe replies to this action by checking the password with its saved hash and sends back a bearer token.
+
+Still in `backend/lib/modules/apostrophe-users/index.js`, you can pay attention to the other custom routes, especially this one:
+
+```js
+self.route('get', 'user', async (req, res) => { ... })
+```
+
+used during the login process in `frontend/components/Login.vue`:
+
+```js
+const aposUser = await this.$axios.$get('/modules/apostrophe-users/user', {})
+```
+
+This backend custom route receives a request with a bearer token (generated when the user send his credentials). Apostrophe recognizes it is a legitimate request because it compares this token to the tokens kept in its database. Then, it sends back the `_id` of the current user. This way, later, when the user will order, it will be identified by its ID.
 
 To order food, we need a dedicated module. Create a new folder under `backend/lib/modules` and name it `orders`. Create an `index.js` file in it with this content:
 
@@ -296,7 +344,7 @@ module.exports = {
 }
 ```
 
-In this module, there are 2 joins: one for dished, one for the customer who ordered them. You can add multiple dishes to an order because it is a `joinByArray` but only one customer through `joinByOne`.
+In this module, there are 2 joins: one for dishes, one for the customer who ordered them. You can add multiple dishes to an order because it is a `joinByArray` but only one customer through `joinByOne`.
 
 Again, this module is RESTified because of the `restApi` parameter.
 
@@ -347,11 +395,14 @@ export const state = () => ({
 
 export const mutations = {
   addToOrder(state, payload) {
-    Vue.set(state.order, payload, (state.order[payload] || 0) + 1)
+    Vue.set(state.order, payload.slug, {
+      ...payload,
+      quantity: state.order[payload.slug] ? state.order[payload.slug].quantity + 1 : 1,
+    })
   },
 }
 ```
-Here, we declare a empty `order` and each time `addToOrder` is called, it adds a new dish to the order.
+Here, we declare an empty `order` and each time `addToOrder` is called, it adds a new dish to the order.
 If this is not familiar to you, consult the [Vuex documentation](https://vuex.vuejs.org/), the state manager from Vue.
 
 Import the mutation in `frontend/pages/index.vue` and add it to the `methods` used in this component:
@@ -383,7 +434,7 @@ Import the mutation in `frontend/pages/index.vue` and add it to the `methods` us
 Still in this file, add 2 elements to the `template` part, under the `img` tag:
 
 ```html
-<v-btn v-if="$store.state.auth && $store.state.auth.loggedIn" color="primary" class="white-text" @click="add(product.title)">Order</v-btn>
+<v-btn v-if="$store.state.auth && $store.state.auth.loggedIn" color="primary" class="white-text" @click="add(product)">Order</v-btn>
 <LoginModal v-else classes="primary white-text" :block="true" :redirect-to="$route.fullPath" label="Order" />
 ```
 
@@ -396,7 +447,7 @@ The template should look like this:
     <div class="homepage-products">
       <div v-for="product in products" :key="product._id" class="homepage-products__item">
         <img :src="product.picture._urls['one-third']" />
-        <v-btn v-if="$store.state.auth && $store.state.auth.loggedIn" color="primary" class="white-text" @click="add(product.title)">Order</v-btn>
+        <v-btn v-if="$store.state.auth && $store.state.auth.loggedIn" color="primary" class="white-text" @click="add(product)">Order</v-btn>
         <LoginModal v-else classes="primary white-text" :block="true" :redirect-to="$route.fullPath" label="Order" />
         <span>{{ product.description }}</span>
       </div>
@@ -407,11 +458,10 @@ The template should look like this:
 
 When logged in, the user sees an "Order" button. When it clicks on it, it triggers the Vuex mutation `addToOrder`.
 
-
-Add a badge next to "My Order", in the top bar. Go to `frontend/components/Nav.vue` and add this around "My Order" in the template:
+Add a badge next to "My Order", in the top bar. Go to `frontend/components/Nav.vue`, look for the words "My Order" in the template and replace the line by the following:
 
 ```html
-<v-badge color="green" :content="counter">My Order</v-badge>
+<v-btn text to="/order" nuxt><v-badge color="green" :content="counter">My Order</v-badge></v-btn>
 ```
 
 then modify the `computed` part in `<script>` this way:
@@ -423,7 +473,7 @@ computed: {
     if (!Object.values(this.order).length) {
       return '0'
     }
-    return Object.values(this.order).reduce((acc, cur) => (acc += cur), 0)
+    return Object.values(this.order).reduce((acc, cur) => (acc += cur.quantity), 0)
   },
 },
 ```
@@ -439,7 +489,7 @@ Also, add a `scss` rule to `<style>` render the badge correctly:
 }
 ```
 
-The whole Nav component is the following:
+The whole `Nav.vue` component is the following:
 
 ```js
 <template>
@@ -469,7 +519,7 @@ The whole Nav component is the following:
 
     <v-toolbar-items>
       <template v-if="auth.loggedIn">
-        <v-btn text>
+        <v-btn text to="/order" nuxt>
           <v-badge color="green" :content="counter">My Order</v-badge>
         </v-btn>
         <v-btn text @click="logout">Logout</v-btn>
@@ -499,7 +549,7 @@ export default {
       if (!Object.values(this.order).length) {
         return '0'
       }
-      return Object.values(this.order).reduce((acc, cur) => (acc += cur), 0)
+      return Object.values(this.order).reduce((acc, cur) => (acc += cur.quantity), 0)
     },
   },
 
@@ -532,9 +582,9 @@ export default {
 
 As the state is updated through the mutation `addToOrder`, components that listen to the `order` state are aware of the change. This updates the badge next to "My Order", in the top bar.
 
-Order several dishes to see the badge increasing.
+Order several dishes to see the badge increasing the number.
 
-That would be nice to have the list of dishes we put in this order. For that, create a page by adding `order.vue` file in `frontent/pages`. Nuxt is smart enough to understand it has to update its internal router and add a route when a file is added into `pages`. By adding a `order` Vue component, it will automatically create the `/order` route.
+That would be nice to have the list of dishes we put in this order. For that, create a page by adding `order.vue` file in `frontent/pages`. Nuxt is smart enough to understand it has to update its internal router and add a route when a file is added into `pages`. By adding an `order` Vue component, it will automatically create the `/order` route.
 
 ```js
 <template>
@@ -611,6 +661,7 @@ export default {
       this.loading = true
       try {
         const date = Date.now()
+        const arr = Object.values(this.order)
         await this.$axios.post('/api/v1/orders', {
           title: `${this.auth.user.email} - ${date}`,
           customerId: this.auth.user._id,
@@ -683,11 +734,13 @@ export const mutations = {
 }
 ```
 
-The `order` page is ready. Order food in the homepage, click multiple times on a "Order" button to add the same dish several times. Now, click in "My Order" in the top bar, you are being redirected to "/order" and will see a page similar to this:
+The `order` page is ready. In the frontend, log out and log back in.
+
+Order food in the homepage, click multiple times on an "Order" button to add the same dish several times. Now, click in "My Order" in the top bar, you are being redirected to "/order" and will see a page similar to this:
 
 <br><img src=".readme-assets/order-frontend.png" width="800"><br>
 
-You can adjust the quantities here also. Then, click on "Proceed". It will generate a POST request and contact the backend REST API. Apostrophe will handle that and create the corresponding order. You can go the backend and check that by clicking on the "Orders" button in the Apostrophe admin bar on `http://localhost/cms` (or `http://localhost:1337/cms`).
+You can adjust the quantities here too. Then, click on "Proceed". It will generate a POST request and contact the backend REST API. Apostrophe will handle that and create the corresponding order. You can go the backend and check that by clicking on the "Orders" button in the Apostrophe admin bar on `http://localhost/cms` (or `http://localhost:1337/cms`).
 
 <br><img src=".readme-assets/order-backend.png" width="800"><br>
 
@@ -720,4 +773,8 @@ indicating to add an object `productsRelationships` to the new order. Apostrophe
 },
 ```
 
-The restaurant has all it needs to handle orders from their online customers. This tutorial had the ambition to demonstrate how nicely Apostrophe can interact with frontend frameworks such as Vue/Nuxt in a Docker environment. We stop here to keep it simple. We could have added email notifications, online payments and many options available in the numerous plugins available in the Apostrophe world. You can discover more by browsing the [online documentation](https://docs.apostrophecms.org/), exploring plugins to [extend our open-source CMS](https://apostrophecms.com/extend) or by joining our [vibrant community](https://apostrophecms.com/community).
+The restaurant has all it needs to handle orders from their online customers. This tutorial had the ambition to demonstrate how nicely Apostrophe can interact with frontend frameworks such as Vue/Nuxt in a Docker environment. We stop here to keep it simple.
+
+You can access the [full version here](https://github.com/falkodev/apos-nuxt-demo/tree/develop).
+
+We could have added email notifications, online payments and many options available in the numerous plugins available in the Apostrophe world. You can discover more by browsing the [online documentation](https://docs.apostrophecms.org/), exploring plugins to [extend our open-source CMS](https://apostrophecms.com/extend) or by joining our [vibrant community](https://apostrophecms.com/community).
