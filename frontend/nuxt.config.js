@@ -82,4 +82,6 @@ module.exports = {
      */
     extractCSS: true,
   },
+
+  telemetry: false,
 }

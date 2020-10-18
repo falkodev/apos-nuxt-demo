@@ -1,11 +1,14 @@
 {% extends data.outerLayout %}
 
 {% block main %}
-  <div class="apos-homepage"></div>
+  <div class="apos-homepage" style="margin-top: 100px"></div>
   {{
     apos.area(data.page, 'columnLayout', {
       widgets: {
-        'columns-layout': {}
+        'columns-layout': {},
+        'apostrophe-images': { limit: 1 },
+        'apostrophe-rich-text': {},
+        'link': {}
       }
     })
   }}
