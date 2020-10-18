@@ -460,6 +460,8 @@ The template should look like this:
 
 When logged in, the user sees an "Order" button under every dish on the homepage. When it clicks on it, it triggers the Vuex mutation `addToOrder`.
 
+<br><img src=".readme-assets/frontend-order-buttons.png" width="800"><br>
+
 Add a badge next to "My Order", in the top bar. Go to `frontend/components/Nav.vue`, look for the words "My Order" in the template and replace the line by the following:
 
 ```html
@@ -581,6 +583,10 @@ export default {
 }
 </style>
 ```
+
+You should see the badge now.
+
+<br><img src=".readme-assets/frontend-badge.png"><br>
 
 As the state is updated through the mutation `addToOrder`, components that listen to the `order` state are aware of the change. This updates the badge next to "My Order", in the top bar.
 
