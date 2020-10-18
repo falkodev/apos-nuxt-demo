@@ -35,7 +35,6 @@ services:
     depends_on:
       - demo-backend
     volumes:
-      - ./frontend/.nuxt:/app/.nuxt
       - ./frontend/assets:/app/assets
       - ./frontend/components:/app/components
       - ./frontend/layouts:/app/layouts
