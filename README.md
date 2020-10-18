@@ -101,7 +101,7 @@ This way, with Docker, you can access the frontend on  `http://localhost` and th
 
 We are going to create dishes for our customers. To facilitate this step, fixtures have been created. They will create an admin user on Apostrophe, and documents in the "Products" module. You can go to `backend/lib/modules/fixtures/index.js` to analyze how Apostrophe fetches and inserts documents into MongoDB.
 
-Here is the schema of the "Products" module:
+Here is the schema of the "Products" module (`backend/lib/modules/products/index.js`):
 
 ```js
 {
