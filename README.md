@@ -8,7 +8,7 @@ This project is a demonstration of using Apostrophe in headless mode, adding Nux
 
 ### Installation
 
-Having `npm` and `node` installed on the machine, run `npm run install-app`.
+Having `npm` and `node` and `mongodb` installed on the machine (see [this documentation](https://docs.apostrophecms.org/getting-started/setting-up-your-environment.html) if not installed), run `npm run install-app`.
 
 ### Usage
 
@@ -63,7 +63,15 @@ Start by cloning this project.
 
 `git clone git@github.com:falkodev/apos-nuxt-demo.git` //TODO: change url to an apostrophe one when ready
 
-If you have Docker installed, run `make` otherwise `npm run install-app`. `http://localhost:1337/cms` for the backend and `http://localhost:3333` for the frontend should be accessible (ports are not mandatory if you use Docker).
+If you have Docker installed, run `make`.
+
+Otherwise `npm run install-app` then `npm run dev`. It will launch both the frontend and the backend. If you wish to separate logs, you can open 2 terminals:
+- `cd frontend && npm run dev` on the first one
+- `cd backend && npm run dev` on the second one
+
+For Docker, if want separated logs, you can too. Stop the current terminal and type `make logs-back`, open a second terminal and type `make logs-front`.
+
+When launched, you can access `http://localhost:1337/cms` (`http://localhost/cms` if using Docker) for the backend and `http://localhost:3333` (`http://localhost` with Docker) for the frontend should be accessible (ports are not mandatory if you use Docker).
 
 For Docker, you can observe the `docker-compose.yml` file, describing how the containers are organized. There will be:
 - a `demo-db` container for the MongoDB image
@@ -96,7 +104,7 @@ In its configuration, Apostrophe has a matching prefix:
 prefix: '/cms',
 ```
 
-This way, with Docker, you can access the frontend on  `http://localhost` and the backend on `http://localhost/cms`.
+This way, with Docker, you can access the frontend on `http://localhost` and the backend on `http://localhost/cms`.
 
 
 We are going to create dishes for our customers. To facilitate this step, fixtures have been created. They will create an admin user on Apostrophe, and documents in the "Products" module. You can go to `backend/lib/modules/fixtures/index.js` to analyze how Apostrophe fetches and inserts documents into MongoDB.
@@ -202,21 +210,13 @@ Let's create a "front-homepage" page by clicking on "Pages" in the Apostrophe ad
 
 <br><img src=".readme-assets/homepage-settings.png" width="800"><br>
 
-The `title` and `slug` fields do not really matter. What it is important is the `type` field: "Front Homepage".
+The `title` and `slug` fields do not really matter. What it is important is the `type` field: "Front Homepage". Click save, and Apostrophe will redirect you to the new page. Once the Apostrophe admin bar is reduced (or you can click on the Apostrophe logo to reduce it), you will see the a "+" icon.
 
-Then, on this new page, click on the "+" icon and add a "Columns Layout" widget.
+Click on it and you will see the list of available widgets.
 
-<br><img src=".readme-assets/columns-layout-widget.png" width="800"><br>
+<br><img src=".readme-assets/widgets-list.png" width="800"><br>
 
-This type of widget is useful when you need to divide the screen. For example, here is what you could do with a 2-column layout:
-
-<br><img src=".readme-assets/2-columns-layout.png" width="800"><br>
-
-But that is not what we are doing. For the moment, choose "1 column". Now you have access to other widgets. Choose "Text Link".
-
-<br><img src=".readme-assets/1-column-layout-widgets.png"><br>
-
-Last step for this widget: you have access to "Rich Text" and "Link". Choose "Rich Text" and start to type text. For example:
+Choose "Rich Text" and start to type text. For example:
 
 <br><img src=".readme-assets/rich-text.png" width="800"><br>
 
@@ -361,7 +361,7 @@ module.exports = require('apostrophe')({
 })
 ```
 
-Now, when `http://localhost/cms` is reloaded, there is a new "Orders" item in the admin bar:
+Now, when `http://localhost/cms` (or `http://localhost:1337/cms` if not using Docker) is reloaded, there is a new "Orders" item in the admin bar:
 
 <br><img src=".readme-assets/admin-bar-orders.png" width="800"><br>
 
@@ -584,7 +584,7 @@ export default {
 </style>
 ```
 
-You should see the badge now.
+You should see the badge now (be sure to be logged in).
 
 <br><img src=".readme-assets/frontend-badge.png"><br>
 
@@ -592,7 +592,9 @@ As the state is updated through the mutation `addToOrder`, components that liste
 
 Order several dishes to see the badge increasing the number.
 
-That would be nice to have the list of dishes we put in this order. For that, create a page by adding `order.vue` file in `frontent/pages`. Nuxt is smart enough to understand it has to update its internal router and add a route when a file is added into `pages`. By adding an `order` Vue component, it will automatically create the `/order` route.
+That would be nice to have the list of dishes we put in this order. For that, create a page by adding `order.vue` file in `frontend/pages`. Nuxt is smart enough to understand it has to update its internal router and add a route when a file is added into `pages`. By adding an `order` Vue component, it will automatically create the `/order` route.
+
+Copy the code below and paste it into `order.vue`:
 
 ```js
 <template>
