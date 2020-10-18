@@ -103,6 +103,8 @@ export default {
           bearer: response.data.bearer,
         }
         this.$auth.setUser(user)
+        this.$auth.$storage.setUniversal('_id', user._id)
+        this.$auth.$storage.setUniversal('email', user.email)
         this.displaySnack({ message: 'Welcome', color: 'success' })
       } catch (e) {
         this.displaySnack({ message: 'Error', color: 'error' })
