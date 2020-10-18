@@ -54,6 +54,10 @@ export default {
   methods: {
     logout() {
       this.$auth.logout()
+      this.$auth.$storage.setUniversal('_id', null)
+      this.$auth.$storage.setUniversal('email', null)
+      this.$auth.$storage.setState('loggedIn', false)
+      this.$auth.$storage.setState('user', false)
     },
   },
 }

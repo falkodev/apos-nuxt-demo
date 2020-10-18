@@ -22,6 +22,14 @@ export default {
     Nav,
     Snackbar,
   },
+  mounted() {
+    if (this.$auth.$storage.getUniversal('_id')) {
+      this.$auth.setUser({
+        _id: this.$auth.$storage.getUniversal('_id'),
+        email: this.$auth.$storage.getUniversal('email'),
+      })
+    }
+  },
 }
 </script>
 

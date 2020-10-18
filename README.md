@@ -744,9 +744,7 @@ export const mutations = {
 }
 ```
 
-The `order` page is ready. In the frontend, log out and log back in.
-
-Order food in the homepage, click multiple times on an "Order" button to add the same dish several times. Now, click in "My Order" in the top bar, you are being redirected to "/order" and will see a page similar to this:
+The `order` page is ready. Order food in the homepage, click multiple times on an "Order" button to add the same dish several times. Now, click in "My Order" in the top bar, you are being redirected to "/order" and will see a page similar to this:
 
 <br><img src=".readme-assets/order-frontend.png" width="800"><br>
 
