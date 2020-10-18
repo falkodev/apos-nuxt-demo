@@ -35,13 +35,13 @@ Run `docker-compose up` for production in Docker or `make prod`.
 `docker run -ti apos-nuxt-demo_demo-demo-backend sh` to log into the container<br />
 
 Save database:
-`docker run --rm --link demo-db:mongo --net apos-nuxt-demo_demo_default -v $(pwd)/server/data/db:/backup mongo bash -c 'mongodump --out /backup --host mongo:27018 --db network'`
+`docker run --rm --link demo-db:mongo --net apos-nuxt-demo_default -v $(pwd)/server/data/db:/backup mongo bash -c 'mongodump --out /backup --host mongo:27018 --db network'`
 
 Drop database:
 `docker exec network-db mongo --port 27018 --eval "db.getSiblingDB('apos-nuxt-demo').dropDatabase()";`
 
 Restore in container:
-'docker run --rm --link demo-db:mongo --net apos-nuxt-demo_demo_default -v \$(pwd)/server/data/db:/backup mongo mongorestore /backup --host mongo:27018'
+'docker run --rm --link demo-db:mongo --net apos-nuxt-demo_default -v \$(pwd)/server/data/db:/backup mongo mongorestore /backup --host mongo:27018'
 
 ### Fixtures
 
@@ -49,7 +49,7 @@ Restore in container:
 
 ### Clear Docker logs
 
-dev: docker run -it --rm --privileged --pid=host apos-nuxt-demo_demo-demo-backend nsenter -t 1 -m -u -n -i -- sh -c 'truncate -s 0 /var/lib/docker/containers/*/*-json.log'
+dev: docker run -it --rm --privileged --pid=host apos-nuxt-demo_demo-backend nsenter -t 1 -m -u -n -i -- sh -c 'truncate -s 0 /var/lib/docker/containers/*/*-json.log'
 
 ### Nginx
 
@@ -460,6 +460,8 @@ The template should look like this:
 
 When logged in, the user sees an "Order" button under every dish on the homepage. When it clicks on it, it triggers the Vuex mutation `addToOrder`.
 
+<br><img src=".readme-assets/frontend-order-buttons.png" width="800"><br>
+
 Add a badge next to "My Order", in the top bar. Go to `frontend/components/Nav.vue`, look for the words "My Order" in the template and replace the line by the following:
 
 ```html
@@ -581,6 +583,10 @@ export default {
 }
 </style>
 ```
+
+You should see the badge now.
+
+<br><img src=".readme-assets/frontend-badge.png"><br>
 
 As the state is updated through the mutation `addToOrder`, components that listen to the `order` state are aware of the change. This updates the badge next to "My Order", in the top bar.
 
