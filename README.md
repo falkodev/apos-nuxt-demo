@@ -69,7 +69,7 @@ Otherwise `npm run install-app` then `npm run dev`. It will launch both the fron
 - `cd frontend && npm run dev` on the first one
 - `cd backend && npm run dev` on the second one
 
-For Docker, if want separated logs, you can too. Stop the current terminal and type `make logs-back`, open a second terminal and type `make logs-front`.
+For Docker, if you want separated logs, you can too. Stop the current terminal and type `make logs-back`, open a second terminal and type `make logs-front`.
 
 When launched, you can access `http://localhost:1337/cms` (`http://localhost/cms` if using Docker) for the backend and `http://localhost:3333` (`http://localhost` with Docker) for the frontend should be accessible (ports are not mandatory if you use Docker).
 
