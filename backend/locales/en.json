@@ -118,5 +118,9 @@
 	"Background Around Link": "Background Around Link",
 	"Bold Font": "Bold Font",
 	"Open In New Tab?": "Open In New Tab?",
-	"Add nofollow attribute to link": "Add nofollow attribute to link"
+	"Add nofollow attribute to link": "Add nofollow attribute to link",
+	"Menu Items": "Menu Items",
+	"Front Home": "Front Home",
+	"You may be editing that document in another tab or window.\nIf you take control, you could lose work in that tab or window.\nDo you want to take control?": "You may be editing that document in another tab or window.\nIf you take control, you could lose work in that tab or window.\nDo you want to take control?",
+	"Edit Link": "Edit Link"
 }
