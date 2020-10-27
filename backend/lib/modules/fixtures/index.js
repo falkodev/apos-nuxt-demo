@@ -73,7 +73,7 @@ module.exports = {
           const picturePath = path.resolve(__dirname, `./attachments/${pictureName}`)
           const picture = await self.apos.attachments.insert(req, { name: pictureName, path: picturePath })
 
-          await self.apos.product.insert(req, {
+          await self.apos.menuItem.insert(req, {
             title: `Dish ${i}`,
             description: faker.commerce.productDescription(),
             picture,

@@ -1,7 +1,7 @@
 module.exports = {
   extend: 'apostrophe-pieces',
-  name: 'product',
-  alias: 'product',
+  name: 'menu-item',
+  alias: 'menuItem',
   restApi: true,
   addFields: [
     {

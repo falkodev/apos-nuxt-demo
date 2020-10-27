@@ -1,20 +1,21 @@
 <template>
-  <section class="homepage">
+  <section class="home">
     <!-- eslint-disable-next-line vue/no-v-html -->
     <div v-html="content"></div>
-    <div class="homepage-products">
-      <div v-for="product in products" :key="product._id" class="homepage-products__item">
-        <img :src="product.picture._urls['one-third']" />
+    <div class="home-menu-items">
+      <div v-for="item in menuItems" :key="item._id" class="home-menu-items__item">
+        <img :src="item.picture._urls['one-third']" />
         <v-btn
           v-if="$store.state.auth && $store.state.auth.loggedIn"
           color="primary"
           class="white-text"
-          @click="add(product)"
+          @click="add(item)"
         >
           Order
         </v-btn>
         <LoginModal v-else classes="primary white-text" :block="true" :redirect-to="$route.fullPath" label="Order" />
-        <span>{{ product.description }}</span>
+
+        <span>{{ item.description }}</span>
       </div>
     </div>
   </section>
@@ -30,19 +31,19 @@ export default {
   },
 
   async asyncData({ $axios }) {
-    let products = []
+    let menuItems = []
     try {
-      const { results } = await $axios.$get('/api/v1/products')
+      const { results } = await $axios.$get('/api/v1/menu-items')
       if (results.length) {
-        products = results
+        menuItems = results
       }
 
       const pages = await $axios.$get('/api/v1/apostrophe-pages')
-      const homepage = pages._children.find(child => child.type === 'front-homepage')
+      const homepage = pages._children.find(child => child.type === 'front-home')
 
       if (homepage) {
-        const content = await $axios.$get(`/api/v1/apostrophe-pages/${homepage._id}?render=front-homepage`)
-        const htmlString = content.rendered['front-homepage']
+        const content = await $axios.$get(`/api/v1/apostrophe-pages/${homepage._id}?render=front-home`)
+        const htmlString = content.rendered['front-home']
         const htmlSplit = htmlString.split('data-svg-xlink=')
 
         for (let i = 1; i < htmlSplit.length; i++) {
@@ -57,40 +58,40 @@ export default {
 
         return {
           content: newHtmlString,
-          products,
+          menuItems,
         }
       }
       throw new Error('no defined homepage')
     } catch (error) {
-      if (products) {
+      if (menuItems) {
         return {
           content: '',
-          products,
+          menuItems,
         }
       }
       return {
         content: '',
-        products: [],
+        menuItems: [],
       }
     }
   },
 
   methods: {
     ...mapMutations(['addToOrder']),
-    add(product) {
-      this.addToOrder(product)
+    add(item) {
+      this.addToOrder(item)
     },
   },
 }
 </script>
 
 <style lang="scss">
-.homepage {
+.home {
   width: 100%;
   padding: 0px;
 }
 
-.homepage-products {
+.home-menu-items {
   display: flex;
   flex-direction: row;
   flex-flow: row wrap;

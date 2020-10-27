@@ -16,25 +16,10 @@ apos.define('apostrophe-rich-text-widgets-editor', {
       ],
       styles: [
         { name: 'Body', element: 'p' },
-        { name: 'Homepage Color', element: 'p', styles: { color: '#6B5DFF' } },
         {
-          name: 'Background Color',
-          element: 'p',
-          styles: { background: '#6B5DFF', color: 'white' },
-        },
-        {
-          name: 'Big Size Homepage Color',
+          name: 'Homepage Color',
           element: 'p',
           styles: { 'font-size': '32px', color: '#6B5DFF' },
-        },
-        {
-          name: 'Big Size Background Color',
-          element: 'p',
-          styles: {
-            'font-size': '32px',
-            background: '#6B5DFF',
-            color: 'white',
-          },
         },
         ...(options.styles || []),
       ],

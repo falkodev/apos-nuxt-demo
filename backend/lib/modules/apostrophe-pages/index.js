@@ -1,10 +1,10 @@
 module.exports = {
   restApi: true,
-  apiTemplates: ['front-homepage'],
+  apiTemplates: ['front-home'],
   types: [
     {
-      name: 'front-homepage',
-      label: 'Front Homepage',
+      name: 'front-home',
+      label: 'Front Home',
     },
   ],
   construct: function (self, options) {
