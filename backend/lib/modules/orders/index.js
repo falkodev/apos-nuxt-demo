@@ -12,8 +12,9 @@ module.exports = {
       required: true,
     },
     {
-      name: '_products',
+      name: '_menuItems',
       type: 'joinByArray',
+      withType: 'menu-item',
       required: true,
       relationship: [
         {
@@ -34,7 +35,7 @@ module.exports = {
     {
       name: 'basics',
       label: 'Basics',
-      fields: ['title', 'date', '_products', '_customer', 'published'],
+      fields: ['title', 'date', '_menuItems', '_customer', 'published'],
     },
   ],
   removeFields: ['slug', 'tags'],

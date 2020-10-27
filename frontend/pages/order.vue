@@ -62,11 +62,11 @@ export default {
     changeQuantity(quantity, item) {
       this.updateQuantity({ ...item, quantity })
     },
-    add(product) {
-      this.addToOrder(product)
+    add(item) {
+      this.addToOrder(item)
     },
-    remove(product) {
-      this.removeFromOrder(product)
+    remove(item) {
+      this.removeFromOrder(item)
     },
     async proceed() {
       this.loading = true
@@ -76,8 +76,8 @@ export default {
         await this.$axios.post('/api/v1/orders', {
           title: `${this.auth.user.email} - ${date}`,
           customerId: this.auth.user._id,
-          productsIds: arr.map(product => product._id),
-          productsRelationships: arr.reduce((acc, cur) => ({ ...acc, [cur._id]: { quantity: cur.quantity } }), {}),
+          menuItemsIds: arr.map(item => item._id),
+          menuItemsRelationships: arr.reduce((acc, cur) => ({ ...acc, [cur._id]: { quantity: cur.quantity } }), {}),
           date,
         })
 

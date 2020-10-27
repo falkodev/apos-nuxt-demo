@@ -62,7 +62,7 @@ module.exports = {
         const removedAttachments = await self.apos.attachments.db.remove({ name: /dish/ })
         self.apos.log.info(`Images removed: ${removedAttachments}`)
         const removedPieces = await self.apos.docs.db.remove({
-          type: 'product',
+          type: 'menu-item',
           title: /dish/i,
         })
         self.apos.log.info(`Products removed: ${removedPieces}`)
