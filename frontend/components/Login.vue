@@ -106,6 +106,7 @@ export default {
         this.$auth.$storage.setUniversal('_id', user._id)
         this.$auth.$storage.setUniversal('email', user.email)
         this.displaySnack({ message: 'Welcome', color: 'success' })
+        this.$root.$emit('login')
       } catch (e) {
         this.displaySnack({ message: 'Error', color: 'error' })
       } finally {

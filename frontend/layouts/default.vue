@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <Nav />
+    <Nav @logout="socket.disconnect()" />
     <v-main>
       <v-container fluid fill-height>
         <v-layout justify-center>
@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import io from 'socket.io-client'
+import { mapActions } from 'vuex'
 import Nav from '~/components/Nav.vue'
 import Snackbar from '~/components/Snackbar.vue'
 
@@ -22,6 +24,13 @@ export default {
     Nav,
     Snackbar,
   },
+
+  data() {
+    return {
+      socket: io('localhost:1338'),
+    }
+  },
+
   mounted() {
     if (this.$auth.$storage.getUniversal('_id')) {
       this.$auth.setUser({
@@ -29,7 +38,21 @@ export default {
         email: this.$auth.$storage.getUniversal('email'),
       })
     }
+
+    this.$root.$on('login', () => {
+      this.socket = io('localhost:1338', { transports: ['websocket'] })
+
+      this.socket.emit('openCanal', {
+        id: this.$store.state.auth.user._id,
+      })
+
+      this.socket.on('newStatus', async data => {
+        this.displaySnack({ message: `New status for order ${data.order}: ${data.status}`, color: data.type })
+      })
+    })
   },
+
+  methods: mapActions('snackbar', ['displaySnack']),
 }
 </script>
 

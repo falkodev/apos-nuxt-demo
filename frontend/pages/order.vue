@@ -84,7 +84,7 @@ export default {
         this.loading = false
         this.emptyOrder()
         this.$router.push('/')
-        this.displaySnack({ message: 'Order received. It will be ready soon.' })
+        this.displaySnack({ message: `Order ${date} received. It will be ready soon.` })
       } catch (error) {
         this.loading = false
         this.displaySnack({ message: 'Something went wrong', color: 'error' })

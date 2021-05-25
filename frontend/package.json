@@ -16,7 +16,8 @@
     "@nuxtjs/axios": "^5.12.2",
     "@nuxtjs/vuetify": "^1.11.2",
     "core-js": "^3.6.5",
-    "nuxt": "^2.14.6"
+    "nuxt": "^2.14.6",
+    "socket.io-client": "^4.1.2"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
