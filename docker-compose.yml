@@ -19,6 +19,7 @@ services:
       - ./backend/public:/app/public
     ports:
       - 1337:1337
+      - 1338:1338
     depends_on:
       - demo-db
     environment:
@@ -46,6 +47,7 @@ services:
     environment:
       NODE_ENV: ${NODE_ENV:-production}
       BASE_URL: http://demo-backend:1337/cms
+      API_URL_SOCKET: ws://demo-backend:1338
 
   demo-reverse-proxy:
     container_name: demo-reverse-proxy

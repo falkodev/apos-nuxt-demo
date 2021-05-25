@@ -23,6 +23,7 @@ module.exports = {
 
   express: {
     port,
+    socketIoPort: 1338,
     session: {
       secret: 'bU3ecHawNSXcsAkgJ9wu2SqPAp',
     },

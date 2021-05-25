@@ -66,6 +66,7 @@ export default {
       this.$auth.$storage.setUniversal('email', null)
       this.$auth.$storage.setState('loggedIn', false)
       this.$auth.$storage.setState('user', false)
+      this.$emit('logout')
     },
   },
 }

@@ -6,6 +6,21 @@ module.exports = {
   beforeConstruct(self, options) {
     options.apos.log = require('pino')({ prettyPrint: true })
   },
+  construct(self, options) {
+    self.on('apostrophe:modulesReady', 'startIo', function () {
+      const port = config.get('express.socketIoPort')
+      self.apos.app.io = require('socket.io')(port, {
+        cors: {
+          origin: [/localhost/],
+          methods: ['GET', 'POST'],
+        },
+      })
+    })
+
+    self.on('apostrophe:destroy', 'stopIo', function (req) {
+      self.apos.app.io.close()
+    })
+  },
   port: config.get('express.port'),
   session: {
     secret: config.get('express.session.secret'),
